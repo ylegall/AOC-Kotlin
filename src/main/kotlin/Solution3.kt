@@ -1,14 +1,18 @@
 import java.util.stream.Stream
 
+private fun MatchResult.group(idx: Int): Int {
+    return this.groups[idx]?.value?.toInt() ?: throw Exception("error selecting group $idx")
+}
+
 private fun countOverlappingRectangles(stream: Stream<String>): Int {
     val pattern = Regex("""@ (\d+),(\d+): (\d+)x(\d+)""")
     val points = hashMapOf<Pair<Int,Int>, Int>()
     for (line in stream) {
         val match = pattern.find(line) ?: throw Exception("error parsing line: $line")
-        val x = match.groups[1]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val y = match.groups[2]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val w = match.groups[3]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val h = match.groups[4]?.value?.toInt() ?: throw Exception("error parsing line: $line")
+        val x = match.group(1)
+        val y = match.group(2)
+        val w = match.group(3)
+        val h = match.group(4)
         for (i in x until x + w) {
             for (j in y until y + h) {
                 val point = Pair(i,j)
@@ -26,11 +30,11 @@ private fun findNonOverlappingRectangle(stream: Stream<String>): Int {
     val points = hashMapOf<Pair<Int,Int>, Int>()
     for (line in stream) {
         val match = pattern.find(line) ?: throw Exception("error parsing line: $line")
-        val id = match.groups[1]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val x = match.groups[2]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val y = match.groups[3]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val w = match.groups[4]?.value?.toInt() ?: throw Exception("error parsing line: $line")
-        val h = match.groups[5]?.value?.toInt() ?: throw Exception("error parsing line: $line")
+        val id = match.group(1)
+        val x = match.group(2)
+        val y = match.group(3)
+        val w = match.group(4)
+        val h = match.group(5)
         for (i in x until x + w) {
             for (j in y until y + h) {
                 val point = Pair(i,j)

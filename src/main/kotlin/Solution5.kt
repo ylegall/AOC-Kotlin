@@ -12,22 +12,15 @@ fun collapse(str: String) = str.fold("") { result, next ->
 }
 
 fun main() {
-    input("inputs/input-5.txt").use { lines ->
-        for (line in lines) {
-            println(collapse(line).length)
-        }
-    }
-    input("inputs/input-5.txt").use { lines ->
-        val start = System.currentTimeMillis()
-        for (line in lines) {
-            val minLength = ('a' .. 'z')
-                    .map {
-                        line.replace(it.toString(), "", ignoreCase = true)
-                    }.map {
-                        collapse(it).length
-                    }.min()
-            println(minLength)
-        }
-        println("elapsed ${System.currentTimeMillis() - start}")
-    }
+    val line = input("inputs/input-5.txt").use { it.findFirst().get() }
+
+    println(collapse(line).length)
+
+    val minLength = ('a' .. 'z')
+            .map {
+                line.replace(it.toString(), "", ignoreCase = true)
+            }.map {
+                collapse(it).length
+            }.min()
+    println(minLength)
 }
