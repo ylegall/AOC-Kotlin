@@ -1,3 +1,4 @@
+import kotlin.streams.asSequence
 
 data class Point(val x: Int, val y: Int)
 
@@ -53,7 +54,7 @@ fun largestContainedRegion(points: Map<Int, Point>) {
         }
     }
 
-    println(areas.maxBy { it.value })
+    println("largest area: " + areas.maxBy { it.value }?.value)
 }
 
 fun areaOfRegionWithin10000(points: Map<Int, Point>) {
@@ -73,15 +74,15 @@ fun areaOfRegionWithin10000(points: Map<Int, Point>) {
 }
 
 fun main() {
-    var idx = 0
-    val points = hashMapOf<Int, Point>()
     input("inputs/input-6.txt").use { lines ->
-        for (line in lines) {
+
+        val points = lines.asSequence().mapIndexed { idx, line ->
             val tokens = line.split(",").map { it.trim().toInt() }
-            points[idx++] = Point(tokens[0], tokens[1])
-        }
+            idx to Point(tokens[0], tokens[1])
+        }.toMap()
+
+        largestContainedRegion(points)
+        areaOfRegionWithin10000(points)
     }
 
-    largestContainedRegion(points)
-    areaOfRegionWithin10000(points)
 }
