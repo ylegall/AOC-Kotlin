@@ -84,5 +84,4 @@ fun main() {
         largestContainedRegion(points)
         areaOfRegionWithin10000(points)
     }
-
 }
