@@ -1,4 +1,4 @@
-
+package aoc2018
 const val PLAYERS = 425
 
 class Ring {

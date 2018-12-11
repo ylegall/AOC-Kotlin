@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import kotlin.streams.toList
 
 fun firstRepeat(list: Iterable<Int>): Int {
@@ -15,7 +18,7 @@ fun firstRepeat(list: Iterable<Int>): Int {
 }
 
 fun main() {
-    val list = input("inputs/input-1.txt").use { lines ->
+    val list = input("inputs/2018/1.txt").use { lines ->
         lines.map { it.toInt() }.toList()
     }
     println(list.sum())

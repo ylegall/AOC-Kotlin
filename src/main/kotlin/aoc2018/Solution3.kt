@@ -1,7 +1,10 @@
+package aoc2018
+
+import input
 import java.util.stream.Stream
 
 private fun MatchResult.group(idx: Int): Int {
-    return this.groups[idx]?.value?.toInt() ?: throw Exception("error selecting group $idx")
+    return this.groups[idx]?.value?.toInt() ?: throw Exception("error selecting `aoc2018`.group $idx")
 }
 
 private fun countOverlappingRectangles(stream: Stream<String>): Int {
@@ -52,10 +55,10 @@ private fun findNonOverlappingRectangle(stream: Stream<String>): Int {
 }
 
 fun main() {
-    input("inputs/input-3.txt").use { stream ->
+    input("inputs/2018/3.txt").use { stream ->
         println(countOverlappingRectangles(stream))
     }
-    input("inputs/input-3.txt").use { stream ->
+    input("inputs/2018/3.txt").use { stream ->
         println(findNonOverlappingRectangle(stream))
     }
 }

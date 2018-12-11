@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 
 private const val DIFF = 'a' - 'A'
 
@@ -12,7 +15,7 @@ fun collapse(str: String) = str.fold("") { result, next ->
 }
 
 fun main() {
-    val line = input("inputs/input-5.txt").use { it.findFirst().get() }
+    val line = input("inputs/2018/5.txt").use { it.findFirst().get() }
 
     println(collapse(line).length)
 

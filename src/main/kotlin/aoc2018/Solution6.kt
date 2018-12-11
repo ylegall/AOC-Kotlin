@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import kotlin.streams.asSequence
 
 data class Point(val x: Int, val y: Int)
@@ -74,7 +77,7 @@ fun areaOfRegionWithin10000(points: Map<Int, Point>) {
 }
 
 fun main() {
-    input("inputs/input-6.txt").use { lines ->
+    input("inputs/2018/6.txt").use { lines ->
 
         val points = lines.asSequence().mapIndexed { idx, line ->
             val tokens = line.split(",").map { it.trim().toInt() }

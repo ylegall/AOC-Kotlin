@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import java.util.stream.Stream
 import kotlin.streams.toList
 
@@ -48,7 +51,7 @@ fun findMaxSleepMinute(lines: Stream<String>) {
 }
 
 fun main() {
-    input("inputs/input-4.txt").use { stream ->
+    input("inputs/2018/4.txt").use { stream ->
         findMaxSleepMinute(stream)
     }
 }

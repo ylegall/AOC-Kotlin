@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import java.util.*
 
 data class Node(val children: List<Node>, val metadata: List<Int>)
@@ -41,7 +44,7 @@ private fun parse(items: Iterator<Int>): Node {
 }
 
 fun main() {
-    val items = input("inputs/input-8.txt").use { lines ->
+    val items = input("inputs/2018/8.txt").use { lines ->
         lines.findFirst().get().split(" ").map { it.toInt() }
     }
     val root = parse(items.iterator())

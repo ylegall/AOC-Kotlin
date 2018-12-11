@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 
 data class Vec(var x: Int, var y: Int)
 
@@ -8,7 +11,7 @@ private fun findMessage(positions: List<Vec>, velocities: List<Vec>) {
     var minH = Int.MAX_VALUE
     var minW = Int.MAX_VALUE
 
-    for (t in 0 .. LIMIT) {
+    for (t in 0 ..LIMIT) {
 
         var minX = positions[0].x
         var minY = positions[0].y
@@ -64,7 +67,7 @@ fun main() {
     val positions = arrayListOf<Vec>()
     val velocities = arrayListOf<Vec>()
 
-    input("inputs/input-10.txt").use { lines ->
+    input("inputs/2018/10.txt").use { lines ->
         for (line in lines) {
             val tokens = line.split(',', '<', '>').map { it.trim() }
             positions.add(Vec(tokens[1].toInt(), tokens[2].toInt()))

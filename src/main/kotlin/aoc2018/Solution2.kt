@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import java.util.stream.Stream
 
 fun checksum(stream: Stream<String>): Int {
@@ -28,10 +31,10 @@ fun findMatch(stream: Stream<String>): String {
 }
 
 fun main() {
-    input("inputs/input-2.txt").use { lines ->
+    input("inputs/2018/2.txt").use { lines ->
         println(checksum(lines))
     }
-    input("inputs/input-2.txt").use { lines ->
+    input("inputs/2018/2.txt").use { lines ->
         println(findMatch(lines))
     }
 }

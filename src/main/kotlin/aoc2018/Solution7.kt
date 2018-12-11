@@ -1,3 +1,6 @@
+package aoc2018
+
+import input
 import java.util.*
 
 private fun sortTasks(tasks: MutableMap<Char, MutableSet<Char>>) {
@@ -49,7 +52,7 @@ private fun timeTasks(tasks: MutableMap<Char, MutableSet<Char>>) {
 }
 
 fun main() {
-    input("inputs/input-7.txt").use { lines ->
+    input("inputs/2018/7.txt").use { lines ->
         val tasks = hashMapOf<Char, MutableSet<Char>>()
         for (line in lines) {
             val tokens = line.split(" ")
