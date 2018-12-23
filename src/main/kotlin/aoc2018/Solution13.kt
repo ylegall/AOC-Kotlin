@@ -64,22 +64,23 @@ private fun Car.turn(roads: Map<Point, Char>) {
     }
 }
 
-private fun getFirstCrash(roads: Map<Point, Char>, cars: HashMap<Point, Car>): Point {
-    var i = 1
-    while (true) {
-        cars.entries.sortedWith(compareBy({ it.key.y }, { it.key.x })).forEach { entry ->
-            val car = entry.value
-            cars.remove(car.pos)
+private fun simulate(roads: Map<Point, Char>, cars: HashMap<Point, Car>) {
+    if (cars.isEmpty()) return
+    while (cars.size > 1) {
+        val sortedCars = cars.values.sortedWith(compareBy({ it.pos.y }, { it.pos.x }))
+        for (car in sortedCars) {
+            cars.remove(car.pos) ?: continue
             car.advance()
             if (car.pos in cars) {
-                return car.pos
+                println("crash at ${car.pos}")
+                cars.remove(car.pos)
+            } else {
+                cars[car.pos] = car
+                car.turn(roads)
             }
-            cars[car.pos] = car
-            car.turn(roads)
         }
-        println(i)
-        i += 1
     }
+    println("last car at ${cars.values.first().pos}")
 }
 
 fun main() {
@@ -102,7 +103,7 @@ fun main() {
             }
             y += 1
         }
-        println(getFirstCrash(roads, cars))
+        simulate(roads, cars)
     }
 
 }
