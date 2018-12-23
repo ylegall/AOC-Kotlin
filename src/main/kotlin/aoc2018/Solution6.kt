@@ -1,9 +1,8 @@
 package aoc2018
 
 import input
+import Point
 import kotlin.streams.asSequence
-
-data class Point(val x: Int, val y: Int)
 
 fun Point.mDist(x: Int, y: Int): Int {
     return Math.abs(this.x - x) + Math.abs(this.y - y)
