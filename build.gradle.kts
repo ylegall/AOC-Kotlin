@@ -19,11 +19,12 @@ val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 
 task<JavaExec>("solution1") {
-    main = "Solution1Kt"
+    main = "aoc2018.Solution1Kt"
     classpath = sourceSets["main"].runtimeClasspath
 }
 
-task<JavaExec>("solution2") {
-    main = "Solution2Kt"
+task<JavaExec>("solution13") {
+    main = "aoc2018.Solution13Kt"
     classpath = sourceSets["main"].runtimeClasspath
+    standardInput = System.`in`
 }
