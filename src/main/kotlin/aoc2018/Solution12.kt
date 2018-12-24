@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 
 class PlantPots(
         private var state: Set<Int>,

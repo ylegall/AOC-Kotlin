@@ -1,6 +1,6 @@
 package aoc2018
 
-import Point
+import util.Point
 import java.io.FileInputStream
 
 enum class Direction {
@@ -21,9 +21,9 @@ private fun Direction.turn(turn: TurnType): Direction {
 }
 
 private class Car(
-    var pos: Point,
-    var direction: Direction,
-    var turn: TurnType = TurnType.LEFT
+        var pos: Point,
+        var direction: Direction,
+        var turn: TurnType = TurnType.LEFT
 ) {
     override fun toString() = when(direction) {
         Direction.UP -> "^"
@@ -93,7 +93,7 @@ fun main() {
             var x = 0
             for (c in line) {
                 when (c) {
-                    '+','\\','/' -> roads[Point(x,y)] = c
+                    '+','\\','/' -> roads[Point(x, y)] = c
                     '>' -> Car(Point(x, y), Direction.RIGHT).apply { cars[pos] = this }
                     '^' -> Car(Point(x, y), Direction.UP).apply { cars[pos] = this }
                     'v' -> Car(Point(x, y), Direction.DOWN).apply { cars[pos] = this }

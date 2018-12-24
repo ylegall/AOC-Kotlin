@@ -1,6 +1,6 @@
 package aoc2017
 
-import input
+import util.input
 
 // part 1
 private fun consecutiveDigitSum(line: String): Int {

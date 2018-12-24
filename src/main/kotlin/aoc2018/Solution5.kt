@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 
 private const val DIFF = 'a' - 'A'
 

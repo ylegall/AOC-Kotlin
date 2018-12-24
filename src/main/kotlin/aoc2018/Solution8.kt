@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 import java.util.*
 
 data class Node(val children: List<Node>, val metadata: List<Int>)

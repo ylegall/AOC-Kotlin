@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 
 data class Vec(var x: Int, var y: Int)
 

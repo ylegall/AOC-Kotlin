@@ -1,12 +1,9 @@
 package aoc2018
 
-import input
-import Point
+import util.input
+import util.Point
+import util.mDist
 import kotlin.streams.asSequence
-
-fun Point.mDist(x: Int, y: Int): Int {
-    return Math.abs(this.x - x) + Math.abs(this.y - y)
-}
 
 inline fun <T, R: Comparable<R>> Iterable<T>.minByOrNull(selector: (T) -> R): T? {
     val iterator = iterator()

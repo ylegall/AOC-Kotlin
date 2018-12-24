@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 import java.util.stream.Stream
 
 private fun MatchResult.group(idx: Int): Int {

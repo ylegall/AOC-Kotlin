@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 import java.util.stream.Stream
 
 fun checksum(stream: Stream<String>): Int {

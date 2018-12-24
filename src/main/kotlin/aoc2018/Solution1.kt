@@ -1,6 +1,6 @@
 package aoc2018
 
-import input
+import util.input
 import kotlin.streams.toList
 
 fun firstRepeat(list: Iterable<Int>): Int {

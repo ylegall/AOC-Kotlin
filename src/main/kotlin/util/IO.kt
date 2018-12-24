@@ -1,3 +1,5 @@
+package util
+
 import java.io.FileInputStream
 import java.util.stream.Stream
 
