@@ -5,17 +5,17 @@ import util.input
 import java.util.*
 import kotlin.streams.toList
 
-sealed class Actor(
+enum class Team(val symbol: Char) {
+    Goblin('G'),
+    Elf('E');
+}
+
+data class Actor(
+        val team: Team,
         var pos: Point,
         var hp: Int = 200,
         var ap: Int = 3
 )
-class Elf(pos: Point): Actor(pos) {
-    override fun toString() = "E(${pos.x},${pos.y})"
-}
-class Goblin(pos: Point): Actor(pos) {
-    override fun toString() = "G(${pos.x},${pos.y})"
-}
 
 data class Path(
         val first: Point,
@@ -25,8 +25,7 @@ data class Path(
 
 class Game(
         val grid: List<CharArray>,
-        val elves: HashMap<Point, Elf>,
-        val goblins: HashMap<Point, Goblin>
+        val actors: HashMap<Point, Actor>
 ) {
     private fun cell(p: Point) = grid[p.y][p.x]
 
@@ -41,10 +40,36 @@ class Game(
 
     private fun openNeighbors(p: Point) = neighbors(p).filter { cell(it) == '.' }
 
-    private fun Actor.enemies() = if (this is Elf) goblins else elves
+    private fun Actor.closestEnemy() = neighbors(pos).firstOrNull {
+        if (team == Team.Elf) {
+            cell(it) == 'G'
+        } else {
+            cell(it) == 'E'
+        }
+    }
 
-    private fun getDestination(actor: Actor): Point? {
-        return actor.enemies().keys.flatMap { openNeighbors(it) }.sorted().firstOrNull()
+    private fun Actor.getDestination(): Point? {
+        return actors.filter {
+            it.value.team != team
+        }.keys.flatMap {
+            openNeighbors(it)
+        }.distinct().flatMap {
+            shortestPaths(pos, it)
+        }.groupBy {
+            it.steps
+        }.minBy {
+            it.key
+        }?.value?.map {
+            it.first
+        }?.sorted()?.first()
+    }
+
+    private fun Actor.moveTo(point: Point) {
+        actors.remove(pos)
+        grid[pos.y][pos.x] = '.'
+        pos = point
+        grid[pos.y][pos.x] = team.symbol
+        actors[point] = this
     }
 
     private fun shortestPaths(src: Point, dst: Point): List<Path> {
@@ -80,23 +105,29 @@ class Game(
     }
 
     fun run() {
+        debug(grid)
         var round = 0
-        while (elves.isNotEmpty() && goblins.isNotEmpty()) {
+        while (actors.isNotEmpty()) {
+            Thread.sleep(1000)
             // sort to find the turn order
-            val actors = (goblins + elves).entries.sortedBy { it.key }.map { it.value }
+            val actors = actors.entries.sortedBy { it.key }.map { it.value }
             //println(actors)
 
             for (actor in actors) {
-                val enemies = if (actor is Elf) goblins else elves
-                val destination = getDestination(actor) ?: continue
-                val paths = shortestPaths(actor.pos, destination)
-                println(actor)
-                println(paths)
-                break
-            }
+                // look for actor in range to attack
+                val enemy = actor.closestEnemy()
+                if (enemy != null) {
+                    // attack
+                    continue
+                }
 
-            break
+                // else move
+                val dst = actor.getDestination() ?: continue
+                actor.moveTo(dst)
+            }
             round += 1
+            debug(grid)
+            //println(round)
         }
         println("rounds: $round")
     }
@@ -112,22 +143,21 @@ private fun debug(grid: List<CharArray>) {
 }
 
 fun main() {
-    val elves = HashMap<Point, Elf>()
-    val goblins = HashMap<Point, Goblin>()
+    val actors = HashMap<Point, Actor>()
 
-    val grid = input("inputs/2018/15.txt").use {
+    val grid = input("inputs/2018/15-test.txt").use {
         val lines = it.toList().map { it.toCharArray() }
         for (y in 0 until lines.size) {
             for (x in 0 until lines[y].size) {
                 val pos = Point(x, y)
-                when (lines[y][x]) {
-                    'E' -> elves[pos] = Elf(pos)
-                    'G' -> goblins[pos] = Goblin(pos)
+                when(lines[y][x]) {
+                    'E' -> actors[pos] = Actor(Team.Elf, pos)
+                    'G' -> actors[pos] = Actor(Team.Goblin, pos)
                 }
             }
         }
         lines
     }
 
-    Game(grid, elves, goblins).run()
+    Game(grid, actors).run()
 }
