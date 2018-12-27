@@ -40,13 +40,13 @@ class Game(
 
     private fun openNeighbors(p: Point) = neighbors(p).filter { cell(it) == '.' }
 
-    private fun Actor.closestEnemy() = neighbors(pos).firstOrNull {
-        if (team == Team.Elf) {
-            cell(it) == 'G'
-        } else {
-            cell(it) == 'E'
-        }
-    }
+    private fun Actor.closestEnemy() = neighbors(pos).mapNotNull {
+        actors[it]
+    }.filter {
+        it.team != team
+    }.sortedWith(compareBy(
+            { it.hp }, { it.pos })
+    ).firstOrNull()
 
     private fun Actor.getDestination(): Point? {
         return actors.filter {
@@ -110,26 +110,36 @@ class Game(
         while (actors.isNotEmpty()) {
             Thread.sleep(1000)
             // sort to find the turn order
-            val actors = actors.entries.sortedBy { it.key }.map { it.value }
+            val sortedActors = actors.entries.sortedBy { it.key }.map { it.value }
             //println(actors)
 
-            for (actor in actors) {
+            for (actor in sortedActors) {
+                if (actor.hp <= 0) continue
+
                 // look for actor in range to attack
-                val enemy = actor.closestEnemy()
-                if (enemy != null) {
-                    // attack
-                    continue
+                var enemy = actor.closestEnemy()
+                if (enemy == null) {
+                    // TODO: end game logic
+                    val dst = actor.getDestination() ?: continue
+                    actor.moveTo(dst)
                 }
 
-                // else move
-                val dst = actor.getDestination() ?: continue
-                actor.moveTo(dst)
+                // attack
+                enemy = actor.closestEnemy()
+                if (enemy != null) {
+                    enemy.hp -= actor.ap
+                    if (enemy.hp <= 0) {
+                        actors.remove(enemy.pos)
+                        grid[enemy.pos.y][enemy.pos.x] = '.'
+                    }
+                }
+
             }
             round += 1
             debug(grid)
-            //println(round)
         }
         println("rounds: $round")
+        println("total hp: ${actors.values.map{ it.hp }.sum()}")
     }
 }
 
