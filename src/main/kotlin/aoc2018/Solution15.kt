@@ -2,6 +2,7 @@ package aoc2018
 
 import util.Point
 import util.input
+import util.mDist
 import java.util.*
 import kotlin.streams.toList
 
@@ -20,6 +21,7 @@ data class Actor(
 data class Path(
         val first: Point,
         val current: Point,
+        val mDist: Int,
         val steps: Int
 )
 
@@ -29,18 +31,18 @@ class Game(
 ) {
     private fun cell(p: Point) = grid[p.y][p.x]
 
-    private fun neighbors(p: Point): List<Point> {
+    private fun Point.neighbors(): List<Point> {
         return listOf(
-                Point(p.x, p.y - 1),
-                Point(p.x - 1, p.y),
-                Point(p.x + 1, p.y),
-                Point(p.x, p.y + 1)
+                Point(x, y - 1),
+                Point(x - 1, y),
+                Point(x + 1, y),
+                Point(x, y + 1)
         ).filter { cell(it) != '#' }
     }
 
-    private fun openNeighbors(p: Point) = neighbors(p).filter { cell(it) == '.' }
+    private fun Point.openNeighbors() = neighbors().filter { cell(it) == '.' }
 
-    private fun Actor.closestEnemy() = neighbors(pos).mapNotNull {
+    private fun Actor.closestEnemy() = pos.neighbors().mapNotNull {
         actors[it]
     }.filter {
         it.team != team
@@ -48,11 +50,9 @@ class Game(
             { it.hp }, { it.pos })
     ).firstOrNull()
 
-    private fun Actor.getDestination(): Point? {
-        return actors.filter {
-            it.value.team != team
-        }.keys.flatMap {
-            openNeighbors(it)
+    private fun Actor.getDestination(points: List<Point>): Point? {
+        return points.flatMap {
+            it.openNeighbors()
         }.distinct().flatMap {
             shortestPaths(pos, it)
         }.groupBy {
@@ -75,11 +75,11 @@ class Game(
     private fun shortestPaths(src: Point, dst: Point): List<Path> {
         var minSteps = Int.MAX_VALUE
         val shortestPaths = hashSetOf<Path>()
-        val q = PriorityQueue<Path>(compareBy({ it.steps }, { it.first }))
+        val q = PriorityQueue<Path>(compareBy({ it.mDist }, { it.first }))
         val seen = hashSetOf(src)
 
-        openNeighbors(src).forEach { point ->
-            q.add(Path(point, point, 1))
+        src.openNeighbors().forEach { point ->
+            q.add(Path(point, point, 1 + point.mDist(dst), 1))
         }
 
         while (q.isNotEmpty()) {
@@ -93,12 +93,12 @@ class Game(
                     shortestPaths.add(path)
                 }
             } else {
+                seen.add(path.current)
                 if (path.steps < minSteps) {
-                    openNeighbors(path.current).filter { it !in seen }.forEach { next ->
-                        q.add(Path(path.first, next, path.steps + 1))
+                    path.current.openNeighbors().filter { it !in seen }.forEach { next ->
+                        q.add(Path(path.first, next, path.steps + next.mDist(dst), path.steps + 1))
                     }
                 }
-                seen.add(path.current)
             }
         }
         return shortestPaths.sortedBy { it.first }
@@ -107,11 +107,11 @@ class Game(
     fun run() {
         debug(grid)
         var round = 0
-        while (actors.isNotEmpty()) {
-            Thread.sleep(1000)
+
+        outer@while (actors.isNotEmpty()) {
+            //Thread.sleep(1000)
             // sort to find the turn order
             val sortedActors = actors.entries.sortedBy { it.key }.map { it.value }
-            //println(actors)
 
             for (actor in sortedActors) {
                 if (actor.hp <= 0) continue
@@ -120,7 +120,11 @@ class Game(
                 var enemy = actor.closestEnemy()
                 if (enemy == null) {
                     // TODO: end game logic
-                    val dst = actor.getDestination() ?: continue
+                    val enemyPoints = actors.values.filter { it.team != actor.team }.map { it.pos }
+                    if (enemyPoints.isEmpty()) {
+                        break@outer
+                    }
+                    val dst = actor.getDestination(enemyPoints) ?: continue
                     actor.moveTo(dst)
                 }
 
@@ -136,13 +140,17 @@ class Game(
 
             }
             round += 1
-            debug(grid)
+            println(round)
+            //debug(grid)
         }
+        val remainingHp = actors.values.map{ it.hp }.sum()
         println("rounds: $round")
-        println("total hp: ${actors.values.map{ it.hp }.sum()}")
+        println("total hp: $remainingHp")
+        println("final result: ${remainingHp * round}")
     }
 }
 
+// 222372 is wrong (too high)
 private fun debug(grid: List<CharArray>) {
     for (y in 0 until grid.size) {
         for (x in 0 until grid[y].size) {
@@ -155,7 +163,7 @@ private fun debug(grid: List<CharArray>) {
 fun main() {
     val actors = HashMap<Point, Actor>()
 
-    val grid = input("inputs/2018/15-test.txt").use {
+    val grid = input("inputs/2018/15.txt").use {
         val lines = it.toList().map { it.toCharArray() }
         for (y in 0 until lines.size) {
             for (x in 0 until lines[y].size) {
