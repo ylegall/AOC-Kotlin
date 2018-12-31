@@ -20,16 +20,15 @@ data class Actor(
 
 data class Path(
         val first: Point,
-        val current: Point,
-        val mDist: Int,
+        val last: Point,
         val steps: Int
 )
 
 class Game(
-        val grid: List<CharArray>,
-        val actors: HashMap<Point, Actor>
+        private val grid: List<CharArray>,
+        private val actors: HashMap<Point, Actor>
 ) {
-    private fun cell(p: Point) = grid[p.y][p.x]
+    private fun Point.value() = grid[y][x]
 
     private fun Point.neighbors(): List<Point> {
         return listOf(
@@ -37,71 +36,71 @@ class Game(
                 Point(x - 1, y),
                 Point(x + 1, y),
                 Point(x, y + 1)
-        ).filter { cell(it) != '#' }
+        ).filter { it.value() != '#' }
     }
 
-    private fun Point.openNeighbors() = neighbors().filter { cell(it) == '.' }
+    private fun Point.openNeighbors() = neighbors().filter { it.value() == '.' }
 
     private fun Actor.closestEnemy() = pos.neighbors().mapNotNull {
         actors[it]
     }.filter {
-        it.team != team
+        it.team != team && it.hp > 0
     }.sortedWith(compareBy(
             { it.hp }, { it.pos })
     ).firstOrNull()
 
-    private fun Actor.getDestination(points: List<Point>): Point? {
-        return points.flatMap {
+    private fun Actor.enemyPoints() = actors.values.filter {
+        it.hp > 0 && it.team != team
+    }.map {
+        it.pos
+    }
+
+    private fun Actor.getDestination(enemyPoints: List<Point>): Point? {
+        return enemyPoints.flatMap {
             it.openNeighbors()
-        }.distinct().flatMap {
-            shortestPaths(pos, it)
-        }.groupBy {
-            it.steps
-        }.minBy {
-            it.key
-        }?.value?.map {
-            it.first
-        }?.sorted()?.first()
+        }.distinct().let { targets ->
+            shortestPaths(pos, targets.toSet())
+        }?.sortedWith(compareBy(
+                { it.last }, { it.first }
+        ))?.first()?.first
     }
 
     private fun Actor.moveTo(point: Point) {
         actors.remove(pos)
         grid[pos.y][pos.x] = '.'
         pos = point
-        grid[pos.y][pos.x] = team.symbol
+        grid[point.y][point.x] = team.symbol
         actors[point] = this
     }
 
-    private fun shortestPaths(src: Point, dst: Point): List<Path> {
+    private fun shortestPaths(src: Point, targets: Set<Point>): List<Path>? {
         var minSteps = Int.MAX_VALUE
-        val shortestPaths = hashSetOf<Path>()
-        val q = PriorityQueue<Path>(compareBy({ it.mDist }, { it.first }))
+        val shortestPaths = arrayListOf<Path>()
+        val q = ArrayDeque<Path>()
         val seen = hashSetOf(src)
 
         src.openNeighbors().forEach { point ->
-            q.add(Path(point, point, 1 + point.mDist(dst), 1))
+            q.add(Path(point, point, 1))
         }
 
         while (q.isNotEmpty()) {
             val path = q.poll()
-            if (path.current == dst) {
+            if (path.last in targets) {
+                shortestPaths.add(path)
                 if (path.steps < minSteps) {
-                    shortestPaths.clear()
-                    shortestPaths.add(path)
                     minSteps = path.steps
-                } else if (path.steps == minSteps) {
-                    shortestPaths.add(path)
                 }
             } else {
-                seen.add(path.current)
-                if (path.steps < minSteps) {
-                    path.current.openNeighbors().filter { it !in seen }.forEach { next ->
-                        q.add(Path(path.first, next, path.steps + next.mDist(dst), path.steps + 1))
+                if (path.last !in seen && path.steps < minSteps) {
+                    val nextPoints = path.last.openNeighbors().filter { it !in seen }
+                    for (next in nextPoints) {
+                        q.add(Path(path.first, next, path.steps + 1))
                     }
                 }
+                seen.add(path.last)
             }
         }
-        return shortestPaths.sortedBy { it.first }
+        return shortestPaths.groupBy { it.steps }.minBy { it.key }?.value
     }
 
     fun run() {
@@ -109,7 +108,6 @@ class Game(
         var round = 0
 
         outer@while (actors.isNotEmpty()) {
-            //Thread.sleep(1000)
             // sort to find the turn order
             val sortedActors = actors.entries.sortedBy { it.key }.map { it.value }
 
@@ -119,8 +117,7 @@ class Game(
                 // look for actor in range to attack
                 var enemy = actor.closestEnemy()
                 if (enemy == null) {
-                    // TODO: end game logic
-                    val enemyPoints = actors.values.filter { it.team != actor.team }.map { it.pos }
+                    val enemyPoints = actor.enemyPoints()
                     if (enemyPoints.isEmpty()) {
                         break@outer
                     }
@@ -137,7 +134,6 @@ class Game(
                         grid[enemy.pos.y][enemy.pos.x] = '.'
                     }
                 }
-
             }
             round += 1
             println(round)
@@ -150,7 +146,6 @@ class Game(
     }
 }
 
-// 222372 is wrong (too high)
 private fun debug(grid: List<CharArray>) {
     for (y in 0 until grid.size) {
         for (x in 0 until grid[y].size) {
