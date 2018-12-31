@@ -9,6 +9,8 @@ data class Point(
 
 val pointComparator = compareBy<Point>({ it.y }, { it.x })
 
+fun Point.mDist(point: Point) = mDist(point.x, point.y)
+
 fun Point.mDist(x: Int, y: Int): Int {
     return Math.abs(this.x - x) + Math.abs(this.y - y)
 }
