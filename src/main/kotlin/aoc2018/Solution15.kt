@@ -26,7 +26,7 @@ data class Path(
 
 class Game(
         private val grid: List<CharArray>,
-        private val actors: HashMap<Point, Actor>
+        private val actors: MutableMap<Point, Actor>
 ) {
     private fun Point.value() = grid[y][x]
 
@@ -103,8 +103,9 @@ class Game(
         return shortestPaths.groupBy { it.steps }.minBy { it.key }?.value
     }
 
-    fun run() {
-        debug(grid)
+    fun run(elfAttackPower: Int = 3, allowElfDeaths: Boolean = true): Team {
+        //debug(grid)
+        println("attack power: $elfAttackPower")
         var round = 0
 
         outer@while (actors.isNotEmpty()) {
@@ -128,21 +129,33 @@ class Game(
                 // attack
                 enemy = actor.closestEnemy()
                 if (enemy != null) {
-                    enemy.hp -= actor.ap
+                    enemy.hp -= if (actor.team == Team.Elf) {
+                        elfAttackPower
+                    } else {
+                        actor.ap
+                    }
+
                     if (enemy.hp <= 0) {
+                        if (enemy.team == Team.Elf && !allowElfDeaths) {
+                            println("AN ELF HAS DIED")
+                            return Team.Goblin
+                        }
                         actors.remove(enemy.pos)
                         grid[enemy.pos.y][enemy.pos.x] = '.'
                     }
                 }
             }
             round += 1
-            println(round)
+            //println(round)
             //debug(grid)
         }
-        val remainingHp = actors.values.map{ it.hp }.sum()
-        println("rounds: $round")
+        val survivors = actors.values.filter{ it.hp > 0 }
+        val remainingHp = survivors.map{ it.hp }.sum()
+        println("\nrounds: $round")
+        println("elf attack power: $elfAttackPower")
         println("total hp: $remainingHp")
         println("final result: ${remainingHp * round}")
+        return survivors.first().team
     }
 }
 
@@ -154,6 +167,9 @@ private fun debug(grid: List<CharArray>) {
         println()
     }
 }
+
+private fun copyOf(grid: List<CharArray>) = grid.map { row -> Arrays.copyOf(row, row.size) }.toList()
+private fun copyOf(actors: HashMap<Point, Actor>) = actors.mapValues { it.value.copy() }.toMutableMap()
 
 fun main() {
     val actors = HashMap<Point, Actor>()
@@ -172,5 +188,15 @@ fun main() {
         lines
     }
 
-    Game(grid, actors).run()
+    // part 1:
+    Game(copyOf(grid), copyOf(actors)).run()
+
+    // part 2:
+    (4 .. 200).asSequence().map { elfAttackPower ->
+        Pair(elfAttackPower, Game(copyOf(grid), copyOf(actors)).run(elfAttackPower, allowElfDeaths = false))
+    }.first {
+        it.second == Team.Elf
+    }.let {
+        println("required elf attack power: ${it.first}")
+    }
 }
