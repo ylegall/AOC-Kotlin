@@ -3,11 +3,11 @@ package aoc2015
 import util.input
 import kotlin.streams.toList
 
-fun countParens(parens: String): Int {
+private fun countParens(parens: String): Int {
     return parens.map { if (it == '(') 1 else -1 }.sum()
 }
 
-tailrec fun firstNegativeIndex(index: Int, sum: Int, parens: String): Int {
+private tailrec fun firstNegativeIndex(index: Int, sum: Int, parens: String): Int {
     if (index > parens.length) return -1
     if (sum == -1) return index
     val newSum = sum + if (parens[index] == '(') 1 else -1
