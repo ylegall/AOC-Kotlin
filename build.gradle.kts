@@ -23,8 +23,8 @@ task<JavaExec>("solution1") {
     classpath = sourceSets["main"].runtimeClasspath
 }
 
-task<JavaExec>("solution13") {
-    main = "aoc2018.Solution13Kt"
+task<JavaExec>("Day9") {
+    main = "aoc2015.Day9Kt"
     classpath = sourceSets["main"].runtimeClasspath
     standardInput = System.`in`
 }

@@ -4,7 +4,7 @@ import java.security.MessageDigest
 import javax.xml.bind.DatatypeConverter
 
 
-const val INPUT = "iwrupvqb"
+private const val INPUT = "iwrupvqb"
 
 private fun firstHashWithPrefix(key: String, target: String): Int {
     val md = MessageDigest.getInstance("MD5")
