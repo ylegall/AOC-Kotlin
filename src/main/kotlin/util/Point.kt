@@ -14,3 +14,7 @@ fun Point.mDist(point: Point) = mDist(point.x, point.y)
 fun Point.mDist(x: Int, y: Int): Int {
     return Math.abs(this.x - x) + Math.abs(this.y - y)
 }
+
+operator fun Point.plus(other: Point) = Point(x + other.x, y + other.y)
+
+operator fun Point.times(magnitude: Int) = Point(x * magnitude, y * magnitude)
