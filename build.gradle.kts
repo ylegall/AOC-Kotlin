@@ -12,7 +12,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation("com.google.code.gson:gson:2.8.5")
 }
 
 val compileKotlin: KotlinCompile by tasks
