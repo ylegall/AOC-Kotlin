@@ -1,21 +1,9 @@
 package aoc2015
 
 import util.input
+import util.permutations
 import kotlin.streams.asSequence
 
-private fun Set<String>.permutations(): List<List<String>> {
-    return permutations(listOf(), this)
-}
-
-private fun permutations(current: List<String>, options: Set<String>): List<List<String>> {
-    return if (options.isEmpty()) {
-        listOf(current)
-    } else {
-        options.flatMap { item ->
-            permutations(current + item, options.minusElement(item))
-        }
-    }
-}
 
 private fun parseInput(lines: Sequence<String>): Map<Pair<String, String>, Int> {
     return lines.fold(hashMapOf()) { map, line ->

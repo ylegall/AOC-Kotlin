@@ -1,33 +1,11 @@
 package aoc2015
 
 import util.input
-
-private fun permutations(cities: List<String>): List<List<String>> {
-    return permutations(cities, linkedSetOf(), arrayListOf())
-}
-
-private fun permutations(
-        cities: List<String>,
-        current: LinkedHashSet<String>,
-        results: ArrayList<List<String>>
-): List<List<String>> {
-    val nextCities = cities.filter { it !in current }
-
-    if (nextCities.isEmpty()) {
-        results.add(current.toList())
-    } else {
-        for (city in nextCities) {
-            current.add(city)
-            permutations(cities, current, results)
-            current.remove(city)
-        }
-    }
-    return results
-}
+import util.permutations
 
 fun tourLengths(distances: Map<Pair<String, String>, Int>, cities: List<String>): List<Int> {
-    return permutations(cities).map { cityList ->
-        cityList.zipWithNext().map { distances[it]!! }.sum()
+    return cities.permutations().map { cityList ->
+        cityList.zipWithNext().map { cityPair -> distances[cityPair]!! }.sum()
     }
 }
 
