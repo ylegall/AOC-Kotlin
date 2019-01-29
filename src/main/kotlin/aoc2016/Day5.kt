@@ -2,7 +2,6 @@ package aoc2016
 
 import java.security.MessageDigest
 import javax.xml.bind.DatatypeConverter
-import kotlin.system.measureTimeMillis
 
 const val INPUT = "reyedfim"
 
@@ -34,6 +33,6 @@ private fun complexPassword(): String {
 }
 
 fun main() {
-    //println(simplePassword())
-    println("elapsed ms: " + measureTimeMillis { println(complexPassword()) })
+    println(simplePassword())
+    println(complexPassword())
 }
