@@ -9,7 +9,7 @@ private fun <T> permutations(current: List<T>, options: Set<T>): List<List<T>> {
         listOf(current)
     } else {
         options.flatMap { item ->
-            permutations(current + item, options.minusElement(item))
+            permutations(current + item, options - item)
         }
     }
 }
