@@ -11,11 +11,11 @@ private val aaaaPattern = Regex("""([a-z])\1\1\1""")
 private val abaBabPattern = Regex("""((\w)(\w)\2)\w*$brks(\w*$brks\w*$brks)*\w*\3\2\3""")
 private val aaaPattern = Regex("""([a-z])\1\1""")
 
-fun String.isValid() = abbaPattern.findAll(this)
+private fun String.isValid() = abbaPattern.findAll(this)
         .filterNot { match -> aaaaPattern.matches(match.value) }
         .any()
 
-fun String.isInvalid() = bracketPattern.findAll(this)
+private fun String.isInvalid() = bracketPattern.findAll(this)
         .filter { match -> match.value.isValid() }
         .any()
 

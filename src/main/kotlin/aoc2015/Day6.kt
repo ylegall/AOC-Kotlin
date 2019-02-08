@@ -3,7 +3,7 @@ package aoc2015
 import util.Point
 import util.input
 
-const val LEN = 1000
+private const val LEN = 1000
 
 private val pointPattern = Regex("""(\d+),(\d+)""")
 
