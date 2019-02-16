@@ -23,7 +23,7 @@ inline fun <T, R: Comparable<R>> Iterable<T>.minByOrNull(selector: (T) -> R): T?
     return minElement
 }
 
-fun largestContainedRegion(points: Map<Int, Point>) {
+private fun largestContainedRegion(points: Map<Int, Point>) {
     val areas = hashMapOf<Int, Int>()
     val edgePoints = hashSetOf<Int>()
 
