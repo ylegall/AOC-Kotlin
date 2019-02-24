@@ -20,7 +20,7 @@ private fun lookSay(seq: String): String {
     return buff.append(count).append(char).toString()
 }
 
-fun lookSaySequenceLength(times: Int): Int {
+private fun lookSaySequenceLength(times: Int): Int {
     var seq = INPUT
     repeat(times) {
         seq = lookSay(seq)
