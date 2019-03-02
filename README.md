@@ -4,4 +4,4 @@
 
 Kotlin solutions for the Advent of Code
 
-Copyright © 2018 Yann Le Gall.
+Copyright © 2019
