@@ -4,7 +4,7 @@ import util.input
 import java.util.stream.Stream
 import kotlin.streams.asSequence
 
-val featuresToMatch = mapOf(
+private val featuresToMatch = mapOf(
     "children"    to "3",
     "cats"        to "7",
     "samoyeds"    to "2",

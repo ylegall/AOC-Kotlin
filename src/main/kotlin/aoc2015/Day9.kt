@@ -3,7 +3,7 @@ package aoc2015
 import util.input
 import util.permutations
 
-fun tourLengths(distances: Map<Pair<String, String>, Int>, cities: List<String>): List<Int> {
+private fun tourLengths(distances: Map<Pair<String, String>, Int>, cities: List<String>): List<Int> {
     return cities.permutations().map { cityList ->
         cityList.zipWithNext().map { cityPair -> distances[cityPair]!! }.sum()
     }

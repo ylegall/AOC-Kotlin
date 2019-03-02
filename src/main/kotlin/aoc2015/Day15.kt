@@ -3,7 +3,7 @@ package aoc2015
 import util.input
 import kotlin.streams.asSequence
 
-const val LIMIT = 100
+private const val LIMIT = 100
 
 private data class Ingredient(
         val name: String,
