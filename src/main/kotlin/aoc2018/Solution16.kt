@@ -5,7 +5,7 @@ import kotlin.streams.asSequence
 
 private typealias Operation = (List<Int>, MutableList<Int>) -> Unit
 
-data class Sample(
+private data class Sample(
         val before: List<Int>,
         val opcode: List<Int>,
         val after: List<Int>
