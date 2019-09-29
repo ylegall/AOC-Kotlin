@@ -3,7 +3,7 @@ package aoc2018
 import util.input
 import kotlin.streams.toList
 
-fun firstRepeat(list: Iterable<Int>): Int {
+private fun firstRepeat(list: Iterable<Int>): Int {
     var sum = 0
     val seen = hashSetOf(0)
     while (true) {
