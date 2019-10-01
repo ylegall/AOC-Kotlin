@@ -1,6 +1,8 @@
 package aoc2017
 
 import util.input
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.streams.toList
 
 // part 1
@@ -14,8 +16,8 @@ private fun sumDivisors(rows: List<List<Int>>): Int {
     outer@ for (row in rows) {
         for (i in 0 until row.size - 1) {
             for (j in i + 1 until row.size) {
-                val max = Math.max(row[i], row[j])
-                val min = Math.min(row[i], row[j])
+                val max = max(row[i], row[j])
+                val min = min(row[i], row[j])
                 if (max % min == 0) {
                     sum += (max / min)
                     continue@outer

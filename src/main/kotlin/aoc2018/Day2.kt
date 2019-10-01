@@ -3,7 +3,7 @@ package aoc2018
 import util.input
 import java.util.stream.Stream
 
-fun checksum(stream: Stream<String>): Int {
+private fun checksum(stream: Stream<String>): Int {
     var count2 = 0
     var count3 = 0
     val counts = hashMapOf<Char, Int>()
@@ -18,7 +18,7 @@ fun checksum(stream: Stream<String>): Int {
     return count2 * count3
 }
 
-fun findMatch(stream: Stream<String>): String {
+private fun findMatch(stream: Stream<String>): String {
     val patterns = hashSetOf<String>()
     for (line in stream) {
         val options = line.mapIndexed { i, _ ->
