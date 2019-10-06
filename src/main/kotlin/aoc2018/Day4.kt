@@ -4,7 +4,7 @@ import util.input
 import java.util.stream.Stream
 import kotlin.streams.toList
 
-sealed class Event
+private sealed class Event
 {
     data class WakeUp(val min: Int): Event()
     data class Sleep(val min: Int): Event()
@@ -23,7 +23,7 @@ private fun parseLine(line: String): Event {
     }
 }
 
-fun findMaxSleepMinute(lines: Stream<String>) {
+private fun findMaxSleepMinute(lines: Stream<String>) {
     val guardSleepTimes = hashMapOf<Int, Int>()
     val sleepMinutes = hashMapOf<Pair<Int, Int>, Int>()
     var guardId = -1

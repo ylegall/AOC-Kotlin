@@ -4,9 +4,9 @@ import util.input
 
 private const val DIFF = 'a' - 'A'
 
-fun canCollapse(c1: Char, c2: Char) = Math.abs(c1 - c2) == DIFF
+private fun canCollapse(c1: Char, c2: Char) = Math.abs(c1 - c2) == DIFF
 
-fun collapse(str: String) = str.fold("") { result, next ->
+private fun collapse(str: String) = str.fold("") { result, next ->
     if (result.isNotEmpty() && canCollapse(result.last(), next)) {
         result.dropLast(1)
     } else {
