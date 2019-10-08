@@ -2,9 +2,9 @@ package aoc2018
 
 import util.input
 
-data class Vec(var x: Int, var y: Int)
+private data class Vec(var x: Int, var y: Int)
 
-const val LIMIT = 20000
+private const val LIMIT = 20000
 
 private fun findMessage(positions: List<Vec>, velocities: List<Vec>) {
 
@@ -18,7 +18,7 @@ private fun findMessage(positions: List<Vec>, velocities: List<Vec>) {
         var maxX = positions[0].x
         var maxY = positions[0].y
 
-        for (i in 0 until positions.size) {
+        for (i in positions.indices) {
             positions[i].x += velocities[i].x
             positions[i].y += velocities[i].y
 
@@ -37,30 +37,6 @@ private fun findMessage(positions: List<Vec>, velocities: List<Vec>) {
 
         println("$t: area: ${w * h}, minW: $minW, minH: $minH")
     }
-
-    /*
-    val minX = positions.minBy { it.x }!!.x
-    val minY = positions.minBy { it.y }!!.y
-    val maxX = positions.maxBy { it.x }!!.x
-    val maxY = positions.maxBy { it.y }!!.y
-
-    val w = maxX - minX + 1
-    val h = maxY - minY + 1
-
-    val grid = Array(h) { Array(w) { ' ' } }
-
-    for (p in positions) {
-        grid[p.y - minY][p.x - minX] = '#'
-    }
-
-    for (row in 0 until h) {
-        for (col in 0 until w) {
-            print(grid[row][col])
-        }
-        println()
-    }
-    println()
-    */
 }
 
 fun main() {

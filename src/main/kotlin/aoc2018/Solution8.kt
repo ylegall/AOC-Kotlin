@@ -3,7 +3,7 @@ package aoc2018
 import util.input
 import java.util.*
 
-data class Node(val children: List<Node>, val metadata: List<Int>)
+private data class Node(val children: List<Node>, val metadata: List<Int>)
 
 private fun sumMetadata(root: Node): Int {
     var sum = 0

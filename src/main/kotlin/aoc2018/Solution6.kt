@@ -1,11 +1,11 @@
 package aoc2018
 
-import util.input
 import util.Point
+import util.input
 import util.mDist
 import kotlin.streams.asSequence
 
-inline fun <T, R: Comparable<R>> Iterable<T>.minByOrNull(selector: (T) -> R): T? {
+private inline fun <T, R: Comparable<R>> Iterable<T>.minByOrNull(selector: (T) -> R): T? {
     val iterator = iterator()
     if (!iterator.hasNext()) return null
     var minElement: T? = iterator.next()
@@ -56,7 +56,7 @@ private fun largestContainedRegion(points: Map<Int, Point>) {
     println("largest area: " + areas.maxBy { it.value }?.value)
 }
 
-fun areaOfRegionWithin10000(points: Map<Int, Point>) {
+private fun areaOfRegionWithin10000(points: Map<Int, Point>) {
     val maxX = points.values.maxBy { it.x }?.x!!
     val maxY = points.values.maxBy { it.y }?.y!!
     val minX = points.values.minBy { it.x }?.x!!

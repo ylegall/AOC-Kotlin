@@ -1,7 +1,7 @@
 package aoc2018
 const val PLAYERS = 425
 
-class Ring {
+private class Ring {
     private class Node(val marble: Int) {
         var prev = this
         var next = this

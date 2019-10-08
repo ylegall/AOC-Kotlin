@@ -19,9 +19,9 @@ private fun sortTasks(tasks: MutableMap<Char, MutableSet<Char>>) {
     println(sortedTasks.joinToString(""))
 }
 
-const val NUM_WORKERS = 5
+private const val NUM_WORKERS = 5
 
-data class Task(val label: Char, val time: Int)
+private data class Task(val label: Char, val time: Int)
 
 private fun taskTime(c: Char) = 61 + (c - 'A')
 

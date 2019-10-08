@@ -1,7 +1,7 @@
 package aoc2018
 
-const val SERIAL_NO = 7672
-const val LEN = 300
+private const val SERIAL_NO = 7672
+private const val LEN = 300
 
 private fun hundredsDigit(x: Int): Int {
     return if (x < 100) {

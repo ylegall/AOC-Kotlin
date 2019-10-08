@@ -3,12 +3,12 @@ package aoc2018
 import util.Point
 import java.io.FileInputStream
 
-enum class Direction {
+private enum class Direction {
     UP, RIGHT, DOWN, LEFT
 }
 
-enum class TurnType(val value: Int) {
-    LEFT(-1), STRAIGHT(0), RIGHT(1)
+private enum class TurnType(val value: Int) {
+    LEFT(-1)
 }
 
 private fun TurnType.nextTurn(): TurnType {
@@ -26,10 +26,10 @@ private class Car(
         var turn: TurnType = TurnType.LEFT
 ) {
     override fun toString() = when(direction) {
-        Direction.UP -> "^"
+        Direction.UP    -> "^"
         Direction.RIGHT -> ">"
-        Direction.DOWN -> "v"
-        Direction.LEFT -> "<"
+        Direction.DOWN  -> "v"
+        Direction.LEFT  -> "<"
     }
 }
 
@@ -43,8 +43,7 @@ private fun Car.advance() {
 }
 
 private fun Car.turn(roads: Map<Point, Char>) {
-    val road = roads[pos] ?: return
-    when (road) {
+    when (roads[pos] ?: return) {
         '/' -> direction = when (direction) {
             Direction.UP -> Direction.RIGHT
             Direction.LEFT -> Direction.DOWN

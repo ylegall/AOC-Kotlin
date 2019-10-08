@@ -217,7 +217,7 @@ private object Day17 {
     fun run() {
         val grid = input("inputs/2018/17.txt").use { Grid(it.asSequence()) }
         val waterCells = grid.countWaterCells()
-        //grid.printGrid()
+        grid.printGridToFile()
         println("filled $waterCells cells")
     }
 }
