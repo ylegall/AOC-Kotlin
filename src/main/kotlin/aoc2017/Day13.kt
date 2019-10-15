@@ -15,16 +15,7 @@ private fun findTotalSeverity(scanners: Map<Int, Int>, delay: Int = 0 ): Int {
         isScanned(it, scanners, delay)
     }.map {
         it * scanners.getOrDefault(it, 0)
-    }.sum()//.also { println("delay=$delay, $it") }
-}
-
-private fun parseInput(): Map<Int, Int> {
-    return input("inputs/2017/13.txt").use {
-        it.asSequence().map { line ->
-            val tokens = line.split(": ")
-            tokens[0].toInt() to tokens[1].toInt()
-        }.toMap()
-    }
+    }.sum()
 }
 
 private fun noCatch(scanners: Map<Int, Int>) : Int {
@@ -36,6 +27,15 @@ private fun noCatch(scanners: Map<Int, Int>) : Int {
     }.filterNot {
         it.first
     }.first().second
+}
+
+private fun parseInput(): Map<Int, Int> {
+    return input("inputs/2017/13.txt").use {
+        it.asSequence().map { line ->
+            val tokens = line.split(": ")
+            tokens[0].toInt() to tokens[1].toInt()
+        }.toMap()
+    }
 }
 
 fun main() {
