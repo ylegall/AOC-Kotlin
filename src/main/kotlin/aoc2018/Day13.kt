@@ -1,5 +1,6 @@
 package aoc2018
 
+import aoc2018.Day13.Direction.*
 import util.Point
 import java.io.FileInputStream
 
@@ -9,8 +10,8 @@ private object Day13 {
         UP, RIGHT, DOWN, LEFT;
 
         fun turn(turn: TurnType): Direction {
-            val newDirection = Direction.values().size + this.ordinal + turn.value
-            return values()[newDirection % Direction.values().size]
+            val newDirection = values().size + this.ordinal + turn.value
+            return values()[newDirection % values().size]
         }
     }
 
@@ -28,34 +29,34 @@ private object Day13 {
             var turn: TurnType = TurnType.LEFT
     ) {
         override fun toString() = when(direction) {
-            Direction.UP    -> "^"
-            Direction.RIGHT -> ">"
-            Direction.DOWN  -> "v"
-            Direction.LEFT  -> "<"
+            UP    -> "^"
+            RIGHT -> ">"
+            DOWN  -> "v"
+            LEFT  -> "<"
         }
 
         fun advance() {
             pos = when (direction) {
-                Direction.UP -> Point(pos.x, pos.y - 1)
-                Direction.RIGHT -> Point(pos.x + 1, pos.y)
-                Direction.LEFT -> Point(pos.x - 1, pos.y)
-                Direction.DOWN -> Point(pos.x, pos.y + 1)
+                UP    -> Point(pos.x, pos.y - 1)
+                RIGHT -> Point(pos.x + 1, pos.y)
+                LEFT  -> Point(pos.x - 1, pos.y)
+                DOWN  -> Point(pos.x, pos.y + 1)
             }
         }
 
         fun turn(roads: Map<Point, Char>) {
             when (roads[pos] ?: return) {
                 '/' -> direction = when (direction) {
-                    Direction.UP -> Direction.RIGHT
-                    Direction.LEFT -> Direction.DOWN
-                    Direction.RIGHT -> Direction.UP
-                    Direction.DOWN -> Direction.LEFT
+                    UP    -> RIGHT
+                    LEFT  -> DOWN
+                    RIGHT -> UP
+                    DOWN  -> LEFT
                 }
                 '\\' -> direction = when (direction) {
-                    Direction.UP -> Direction.LEFT
-                    Direction.LEFT -> Direction.UP
-                    Direction.RIGHT -> Direction.DOWN
-                    Direction.DOWN -> Direction.RIGHT
+                    UP    -> LEFT
+                    LEFT  -> UP
+                    RIGHT -> DOWN
+                    DOWN  -> RIGHT
                 }
                 '+' -> {
                     direction = direction.turn(turn)
@@ -95,10 +96,10 @@ private object Day13 {
                 for (c in line) {
                     when (c) {
                         '+','\\','/' -> roads[Point(x, y)] = c
-                        '>' -> Car(Point(x, y), Direction.RIGHT).apply { cars[pos] = this }
-                        '^' -> Car(Point(x, y), Direction.UP).apply { cars[pos] = this }
-                        'v' -> Car(Point(x, y), Direction.DOWN).apply { cars[pos] = this }
-                        '<' -> Car(Point(x, y), Direction.LEFT).apply { cars[pos] = this }
+                        '>' -> Car(Point(x, y), RIGHT).apply { cars[pos] = this }
+                        '^' -> Car(Point(x, y), UP).apply { cars[pos] = this }
+                        'v' -> Car(Point(x, y), DOWN).apply { cars[pos] = this }
+                        '<' -> Car(Point(x, y), LEFT).apply { cars[pos] = this }
                     }
                     x += 1
                 }
