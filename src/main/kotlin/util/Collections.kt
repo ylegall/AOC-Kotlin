@@ -13,3 +13,8 @@ private fun <T> permutations(current: List<T>, options: Set<T>): List<List<T>> {
         }
     }
 }
+
+inline fun <reified T : Enum<T>> enumSetOf(vararg items: T) =
+    java.util.EnumSet.noneOf(T::class.java).apply {
+    addAll(items)
+}

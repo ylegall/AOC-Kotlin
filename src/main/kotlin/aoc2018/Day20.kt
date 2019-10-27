@@ -1,33 +1,14 @@
 package aoc2018
 
-import aoc2018.Day20.Direction.*
+import util.Direction
+import util.Direction.*
 import util.Point
 import util.enumSetOf
+import util.move
 import java.io.File
 import java.util.*
 
 private object Day20 {
-
-    private enum class Direction {
-        NORTH,
-        EAST,
-        SOUTH,
-        WEST;
-
-        fun reverse() = when(this) {
-            NORTH -> SOUTH
-            EAST  -> WEST
-            SOUTH -> NORTH
-            WEST  -> EAST
-        }
-    }
-
-    private fun Point.move(direction: Direction) = when(direction) {
-        NORTH -> Point(x, y - 1)
-        EAST  -> Point(x + 1, y)
-        SOUTH -> Point(x, y + 1)
-        WEST  -> Point(x - 1, y)
-    }
 
     private fun walkGraph(graph: Map<Point, EnumSet<Direction>>) {
         val seen = HashSet<Point>()
