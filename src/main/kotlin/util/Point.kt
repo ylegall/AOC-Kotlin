@@ -17,4 +17,6 @@ fun Point.mDist(x: Int, y: Int): Int {
 
 operator fun Point.plus(other: Point) = Point(x + other.x, y + other.y)
 
+operator fun Point.minus(other: Point) = Point(x - other.x, y - other.y)
+
 operator fun Point.times(magnitude: Int) = Point(x * magnitude, y * magnitude)
