@@ -1,6 +1,6 @@
 package aoc2017
 
-import util.input
+import java.io.File
 
 // part 1
 private fun consecutiveDigitSum(line: String): Int {
@@ -19,9 +19,7 @@ private fun halfwayMatchSum(line: String): Int {
 }
 
 fun main() {
-    val line = input("inputs/2017/1.txt").use {
-        it.findFirst().get().trim()
-    }
+    val line = File("inputs/2017/1.txt").readText().trim()
     println(consecutiveDigitSum(line))
     println(halfwayMatchSum(line))
 }

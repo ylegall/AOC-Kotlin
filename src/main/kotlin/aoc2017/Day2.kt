@@ -1,9 +1,8 @@
 package aoc2017
 
-import util.input
+import java.io.File
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.streams.toList
 
 // part 1
 private fun minMaxDiffSum(rows: List<List<Int>>): Int {
@@ -29,10 +28,8 @@ private fun sumDivisors(rows: List<List<Int>>): Int {
 }
 
 fun main() {
-    val rows = input("inputs/2017/2.txt").use { lines ->
-        lines.map { line ->
-            line.split('\t').map { it.trim().toInt() }
-        }.toList()
+    val rows = File("inputs/2017/2.txt").readLines().map { line ->
+        line.split('\t').map { it.trim().toInt() }
     }
     println(minMaxDiffSum(rows))
     println(sumDivisors(rows))

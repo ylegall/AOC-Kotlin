@@ -1,7 +1,6 @@
 package aoc2017
 
-import util.input
-import kotlin.streams.asSequence
+import java.io.File
 
 
 private fun countLinesWithUniqueWords(lines: List<List<String>>) = lines.map { line ->
@@ -13,9 +12,12 @@ private fun countLinesWithUniqueAnagrams(lines: List<List<String>>) = lines.map 
 }.count { it }
 
 fun main() {
-    val lines = input("inputs/2017/4.txt").use {
-        it.asSequence().map { it.split(" ") }.toList()
+    val lines = File("inputs/2017/4.txt").useLines { lines ->
+        lines.map { it.split(" ") }.toList()
     }
     println(countLinesWithUniqueWords(lines))
     println(countLinesWithUniqueAnagrams(lines))
 }
+
+// 383
+// 265
