@@ -12,6 +12,10 @@ enum class Direction {
         SOUTH -> NORTH
         WEST  -> EAST
     }
+
+    fun turnRight() = values().let { it[(ordinal + 1) % it.size] }
+
+    fun turnLeft() = values().let { it[(it.size + ordinal - 1) % it.size] }
 }
 
 fun Point.move(direction: Direction) = when(direction) {
