@@ -1,66 +1,67 @@
 package aoc2018
 
+import util.Point
+
 private object Day22 {
 
     private const val DEPTH = 11541
 
     private class Cave(
-            targetY: Int,
-            targetX: Int,
+            val targetPoint: Point,
             val depth: Int = DEPTH
     ) {
-        val rows = targetY + 1
-        val cols = targetX + 1
-        val erosionLevel = Array(rows) { arrayOfNulls<Int>(cols) }
-        val geoIndex = Array(rows) { arrayOfNulls<Int>(cols) }
+        val startPoint = Point(0, 0)
+        val erosionLevels = HashMap<Point, Int>()
+        val geoIndex = HashMap<Point, Int>()
 
         init {
-            geoIndex[0][0] = 0
-            for (row in 0 until rows) {
-                geoIndex[row][0] = 48271 * row
-            }
-            for (col in 0 until cols) {
-                geoIndex[0][col] = 16807 * col
-            }
-            getErosionLevel(0, 0)
-            getErosionLevel(rows - 1, cols - 1)
-            geoIndex[rows - 1][cols - 1] = 0
+            geoIndex[startPoint] = 0
+            geoIndex[targetPoint] = 0
+            getErosionLevel(targetPoint)
         }
 
-        fun getGeoIndex(row: Int, col: Int): Int {
-            if (geoIndex[row][col] == null) {
-                geoIndex[row][col] = getErosionLevel(row, col - 1) * getErosionLevel(row - 1, col)
+        fun getGeoIndex(point: Point): Int = geoIndex.getOrPut(point) {
+            when {
+                point.y == 0 -> point.x * 16807
+                point.x == 0 -> point.y * 48271
+                else -> getErosionLevel(point.copy(x = point.x - 1)) *
+                        getErosionLevel(point.copy(y = point.y - 1))
             }
-            return geoIndex[row][col]!!
         }
 
-        fun getErosionLevel(row: Int, col: Int): Int {
-            if (erosionLevel[row][col] == null) {
-                erosionLevel[row][col] = (getGeoIndex(row, col) + depth) % 20183
-            }
-            return erosionLevel[row][col]!!
+        fun getErosionLevel(point: Point): Int = erosionLevels.getOrPut(point) {
+            (getGeoIndex(point) + depth) % 20183
         }
 
-        fun riskLevel() = erosionLevel.sumBy { it.sumBy { it!! % 3 } }
+        fun riskLevel() = (startPoint.x .. targetPoint.x).flatMap { x ->
+            (startPoint.y .. targetPoint.y).map { y ->
+                terrainType(Point(x, y))
+            }
+        }.sum()
+
+        private fun terrainType(point: Point): Int {
+            return getErosionLevel(point) % 3
+        }
 
         fun print() {
-            for (row in erosionLevel.indices) {
-                println(erosionLevel[row].joinToString("") {
-                    when (it!! % 3) {
+            for (y in startPoint.y .. targetPoint.y) {
+                for (x in startPoint.x .. targetPoint.x) {
+                    print(when (terrainType(Point(x, y))) {
                         0 -> "."
                         1 -> "="
                         2 -> "|"
-                        else -> throw Exception("")
-                    }
-                })
+                        else -> "?"
+                    })
+                }
+                println()
             }
         }
     }
 
     fun run() {
-//        val cave = Cave(10, 10, 510)
-        val cave = Cave(778, 14)
-//        cave.print()
+        val cave = Cave(Point(10, 10), 510)
+//        val cave = Cave(Point(14, 778))
+        cave.print()
         println(cave.riskLevel())
     }
 }
