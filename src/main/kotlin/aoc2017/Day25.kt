@@ -6,57 +6,55 @@ private object Day25 {
 
     private const val CHECKSUM_STEPS = 12368930
 
-    private class Tape (val defaultVal: Int = 0) {
-        val leftTape = ArrayDeque<Int>()
-        val rightTape = ArrayDeque<Int>()
-        var currentHead = defaultVal
+    private class Tape {
+        private val leftTape = ArrayDeque<Int>()
+        private val rightTape = ArrayDeque<Int>()
+        var head = 0; private set
 
-        fun read(): Int {
-            return currentHead
-        }
+        fun read() = head
 
         fun write(value: Int) {
-            currentHead = value
+            head = value
         }
 
         fun moveHeadLeft() {
-            rightTape.push(currentHead)
+            rightTape.push(head)
             if (leftTape.isEmpty()) {
-                leftTape.push(defaultVal)
+                leftTape.push(0)
             }
-            currentHead = leftTape.pop()
+            head = leftTape.pop()
         }
 
         fun moveHeadRight() {
-            leftTape.push(currentHead)
+            leftTape.push(head)
             if (rightTape.isEmpty()) {
-                rightTape.push(defaultVal)
+                rightTape.push(0)
             }
-            currentHead = rightTape.pop()
+            head = rightTape.pop()
         }
 
         fun update(action: Action): Char {
-            write(action.write)
+            write(action.writeValue)
             when(action.direction) {
                 'L' -> moveHeadLeft()
                 'R' -> moveHeadRight()
             }
-            return action.state
+            return action.nextState
         }
 
-        fun checkSum() = currentHead + leftTape.sum() + rightTape.sum()
+        fun checkSum() = head + leftTape.sum() + rightTape.sum()
     }
 
-    private class Action(val write: Int, val direction: Char, val state: Char)
+    private class Action(val writeValue: Int, val direction: Char, val nextState: Char)
 
     private class TuringMachine {
 
         val tape = Tape()
-        var state = 'A'
-        var counter = 0
+        var state = 'A'; private set
+        var counter = 0; private set
 
         fun update() {
-            val action = when (Pair(state, tape.read())) {
+            val action = when (state to tape.read()) {
                 'A' to 0 -> Action(1, 'R', 'B')
                 'A' to 1 -> Action(0, 'R', 'C')
                 'B' to 0 -> Action(0, 'L', 'A')
@@ -74,10 +72,9 @@ private object Day25 {
             state = tape.update(action)
             counter++
         }
-
     }
 
-    fun runUntilDone(): Int {
+    fun runUntilChecksum(): Int {
         val turingMachine = TuringMachine()
         while (turingMachine.counter < CHECKSUM_STEPS) {
             turingMachine.update()
@@ -88,5 +85,5 @@ private object Day25 {
 }
 
 fun main() {
-    println(Day25.runUntilDone())
+    println(Day25.runUntilChecksum())
 }
