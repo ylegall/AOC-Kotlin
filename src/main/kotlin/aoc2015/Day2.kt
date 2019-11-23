@@ -1,7 +1,6 @@
 package aoc2015
 
-import util.input
-import kotlin.streams.toList
+import java.io.File
 
 private fun totalWrappingPaper(lines: List<List<Int>>): Int {
     return lines.map {
@@ -19,7 +18,7 @@ private fun totalRibbon(lines: List<List<Int>>): Int {
 }
 
 fun main() {
-    val lines = input("inputs/2015/2.txt").use {
+    val lines = File("inputs/2015/2.txt").useLines {
         it.map { it.split("x").map { it.toInt() } }.toList()
     }
     println(totalWrappingPaper(lines))
