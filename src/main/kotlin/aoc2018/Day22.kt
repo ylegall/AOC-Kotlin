@@ -9,6 +9,8 @@ import util.enumSetOf
 import util.mDist
 import util.move
 import java.util.PriorityQueue
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 private object Day22 {
 
@@ -66,20 +68,20 @@ private object Day22 {
 
         private fun State.nextStates(): Collection<State> {
             val currentSteps = steps
-            val gearOptions = Gear.values().toList() - gear
+            val gearOptions = Gear.values().filter { it != gear && it in validGear(pos) }
             val neighbors = Direction.values().map { pos.move(it) }
 
             val nextStatesWithSameGear = neighbors.map { newPos ->
                 State(newPos, gear).apply { steps = currentSteps + 1 }
-            }.filter { it.isValid() }
+            }
 
             val nextStatesWithNewGear = neighbors.flatMap { newPos ->
                 gearOptions.map { newGear ->
                     State(newPos, newGear).apply { steps = currentSteps + 8 }
                 }
-            }.filter { it.isValid() }
+            }
 
-            return nextStatesWithNewGear + nextStatesWithSameGear
+            return (nextStatesWithNewGear + nextStatesWithSameGear).filter { it.isValid() }
         }
 
         fun findMinStepsToTarget(): Int {
@@ -87,12 +89,12 @@ private object Day22 {
             val frontier = PriorityQueue<State>(compareBy { it.steps + it.pos.mDist(targetPoint) })
             frontier.add(State(startPoint, TORCH))
             while (frontier.isNotEmpty()) {
-                val nextState = frontier.poll()
-                if (nextState.pos == targetPoint && nextState.gear == TORCH) {
-                    return nextState.steps
+                val currentState = frontier.poll()
+                if (currentState.pos == targetPoint && currentState.gear == TORCH) {
+                    return currentState.steps
                 }
-                seenStates.add(nextState)
-                frontier.addAll(nextState.nextStates().filter { it !in seenStates })
+                seenStates.add(currentState)
+                frontier.addAll(currentState.nextStates().filter { it !in seenStates })
             }
             throw Exception("goal not found")
         }
@@ -112,15 +114,17 @@ private object Day22 {
         }
     }
 
+    @ExperimentalTime
     fun run() {
 //        val cave = Cave(Point(10, 10), 510)
         val cave = Cave(Point(14, 778))
         //cave.print()
-        //println(cave.riskLevel())
-        println(cave.findMinStepsToTarget())
+        println(cave.riskLevel())
+        println(measureTimedValue { cave.findMinStepsToTarget() })
     }
 }
 
+@ExperimentalTime
 fun main() {
     Day22.run()
 }

@@ -1,9 +1,8 @@
 package aoc2018
 
-import util.input
-import java.util.stream.Stream
+import java.io.File
 
-private fun checksum(stream: Stream<String>): Int {
+private fun checksum(stream: Sequence<String>): Int {
     var count2 = 0
     var count3 = 0
     val counts = hashMapOf<Char, Int>()
@@ -18,7 +17,7 @@ private fun checksum(stream: Stream<String>): Int {
     return count2 * count3
 }
 
-private fun findMatch(stream: Stream<String>): String {
+private fun findMatch(stream: Sequence<String>): String {
     val patterns = hashSetOf<String>()
     for (line in stream) {
         val options = line.mapIndexed { i, _ ->
@@ -31,10 +30,10 @@ private fun findMatch(stream: Stream<String>): String {
 }
 
 fun main() {
-    input("inputs/2018/2.txt").use { lines ->
+    File("inputs/2018/2.txt").useLines { lines ->
         println(checksum(lines))
     }
-    input("inputs/2018/2.txt").use { lines ->
+    File("inputs/2018/2.txt").useLines { lines ->
         println(findMatch(lines))
     }
 }

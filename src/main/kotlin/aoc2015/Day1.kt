@@ -1,7 +1,6 @@
 package aoc2015
 
-import util.input
-import kotlin.streams.toList
+import java.io.File
 
 private fun countParens(parens: String): Int {
     return parens.map { if (it == '(') 1 else -1 }.sum()
@@ -16,7 +15,7 @@ private tailrec fun firstNegativeIndex(index: Int, sum: Int, parens: String): In
 
 fun main() {
     // part 1
-    val parens = input("inputs/2015/1.txt").use {
+    val parens = File("inputs/2015/1.txt").useLines {
         it.toList().joinToString("").filter { it != '(' || it != ')' }
     }
     println(countParens(parens))

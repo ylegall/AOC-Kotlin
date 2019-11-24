@@ -1,13 +1,12 @@
 package aoc2018
 
-import util.input
-import java.util.stream.Stream
+import java.io.File
 
 private fun MatchResult.group(idx: Int): Int {
     return this.groups[idx]?.value?.toInt() ?: throw Exception("error selecting `aoc2018`.group $idx")
 }
 
-private fun countOverlappingRectangles(stream: Stream<String>): Int {
+private fun countOverlappingRectangles(stream: Sequence<String>): Int {
     val pattern = Regex("""@ (\d+),(\d+): (\d+)x(\d+)""")
     val points = hashMapOf<Pair<Int,Int>, Int>()
     for (line in stream) {
@@ -26,7 +25,7 @@ private fun countOverlappingRectangles(stream: Stream<String>): Int {
     return points.values.filter { it >= 2 }.size
 }
 
-private fun findNonOverlappingRectangle(stream: Stream<String>): Int {
+private fun findNonOverlappingRectangle(stream: Sequence<String>): Int {
     var maxId = 0
     val overlaps = hashSetOf<Int>()
     val pattern = Regex("""#(\d+) @ (\d+),(\d+): (\d+)x(\d+)""")
@@ -55,10 +54,10 @@ private fun findNonOverlappingRectangle(stream: Stream<String>): Int {
 }
 
 fun main() {
-    input("inputs/2018/3.txt").use { stream ->
+    File("inputs/2018/3.txt").useLines { stream ->
         println(countOverlappingRectangles(stream))
     }
-    input("inputs/2018/3.txt").use { stream ->
+    File("inputs/2018/3.txt").useLines { stream ->
         println(findNonOverlappingRectangle(stream))
     }
 }
