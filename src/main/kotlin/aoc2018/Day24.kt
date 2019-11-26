@@ -173,7 +173,6 @@ object Day24 {
     }
 }
 
-// 5321 infection units is too low
 fun main() {
     Day24.findWinningTeam()
     Day24.findUnitsForSmallestBoost()
