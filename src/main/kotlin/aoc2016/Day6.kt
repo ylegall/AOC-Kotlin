@@ -1,7 +1,6 @@
 package aoc2016
 
-import util.input
-import kotlin.streams.asSequence
+import java.io.File
 
 private fun columnCharCounts(lines: Sequence<String>) =
     lines.fold(List<Map<Char, Int>>(8) { mapOf() }) { colCounts, line ->
@@ -19,11 +18,11 @@ private fun leastFrequentCharsByColumn(lines: Sequence<String>) = columnCharCoun
 }.joinToString("")
 
 fun main() {
-    input("inputs/2016/6.txt").use {
+    File("inputs/2016/6.txt").useLines {
         println(mostFrequentCharsByColumn(it.asSequence()))
     }
 
-    input("inputs/2016/6.txt").use {
+    File("inputs/2016/6.txt").useLines {
         println(leastFrequentCharsByColumn(it.asSequence()))
     }
 }

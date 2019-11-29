@@ -1,8 +1,6 @@
 package aoc2016
 
-import util.input
-import java.lang.IllegalStateException
-import kotlin.streams.asSequence
+import java.io.File
 
 private const val WIDTH = 50
 private const val HEIGHT = 6
@@ -63,7 +61,7 @@ private fun Grid.debug() {
 }
 
 fun main() {
-    input("inputs/2016/8.txt").use { lines ->
+    File("inputs/2016/8.txt").useLines { lines ->
         val ops = lines.asSequence().map {
             it.split(" ", "x=", "y=", "x")
         }.map {
