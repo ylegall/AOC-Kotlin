@@ -2,14 +2,12 @@ package aoc2018
 
 import util.Point
 import util.input
-import util.mDist
-import java.util.*
+import java.util.ArrayDeque
+import java.util.Arrays
+import java.util.HashMap
 import kotlin.streams.toList
 
-enum class Team(val symbol: Char) {
-    Goblin('G'),
-    Elf('E');
-}
+enum class Team(val symbol: Char) { Goblin('G'), Elf('E') }
 
 data class Actor(
         val team: Team,
