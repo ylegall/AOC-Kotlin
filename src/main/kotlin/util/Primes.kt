@@ -5,7 +5,7 @@ import java.util.BitSet
 fun primesUntil(limit: Int): Sequence<Int> = sequence {
     val composites = BitSet(limit)
     var i = 2
-    while (i < limit) {
+    while (i <= limit) {
         if (!composites[i]) {
             yield(i)
         }
