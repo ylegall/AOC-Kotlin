@@ -16,6 +16,14 @@ private fun <T> permutations(current: List<T>, options: Set<T>): List<List<T>> {
     }
 }
 
+inline fun <T> Collection<T>.sumByLong(selector: (T) -> Long): Long {
+    var sum = 0L
+    for (item in this) {
+        sum += selector(item)
+    }
+    return sum
+}
+
 inline fun <reified T : Enum<T>> enumSetOf(vararg items: T): EnumSet<T> =
     EnumSet.noneOf(T::class.java).apply {
     addAll(items)
