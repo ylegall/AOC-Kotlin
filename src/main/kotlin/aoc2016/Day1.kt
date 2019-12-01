@@ -5,6 +5,7 @@ import util.input
 import util.mDist
 import util.plus
 import util.times
+import java.io.File
 import kotlin.streams.toList
 
 private val directions = arrayOf(
@@ -58,7 +59,7 @@ private fun distanceFromHQ(moves: List<String>) = moves.fold(
 )
 
 fun main() {
-    val directions = input("inputs/2016/1.txt").use {
+    val directions = File("inputs/2016/1.txt").useLines {
         it.toList().first().split(", ")
     }
     val state = distanceFromHQ(directions)
