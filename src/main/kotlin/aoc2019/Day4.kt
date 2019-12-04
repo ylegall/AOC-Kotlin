@@ -14,11 +14,11 @@ private fun Int.digitList(): List<Int> {
     return digits
 }
 
-private fun Int.isIncreasing() = digitList().windowed(2).all { (first, second) ->
+private fun Int.isIncreasing() = digitList().zipWithNext().all { (first, second) ->
     first <= second
 }
 
-private fun Int.hasRepeatOfAtLeast2() = digitList().windowed(2).any { (first, second) ->
+private fun Int.hasRepeatOfAtLeast2() = digitList().zipWithNext().any { (first, second) ->
     first == second
 }
 
