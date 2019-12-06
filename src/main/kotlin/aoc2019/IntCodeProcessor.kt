@@ -18,7 +18,7 @@ class IntCodeProcessor(
             val op3: Int = 0
     )
 
-    fun parseInstruction(): Instruction {
+    private fun parseInstruction(): Instruction {
         val modes = codes[ip] / 100
         val mode1 = modes % 10
         val mode2 = (modes / 10) % 10

@@ -17,7 +17,27 @@ private fun countOrbits(
         depth: Int = 0
 ): Int {
     val children = tree[currentNode] ?: emptySet()
-    return depth + children.map { countOrbits(tree, it, depth + 1) }.sum()
+    return depth + children.map { nextNode -> countOrbits(tree, nextNode, depth + 1) }.sum()
+}
+
+private fun findPath(
+        start: String,
+        target: String,
+        tree: Map<String, Set<String>>,
+        currentNode: String = start,
+        path: List<String> = listOf(start)
+): List<String> {
+    return if (currentNode == target) {
+        path
+    } else {
+        val children = tree[currentNode] ?: emptySet()
+        children.map { nextNode ->
+            findPath(start, target, tree, nextNode, path + nextNode)
+        }.firstOrNull {
+            it.isNotEmpty()
+        } ?: emptyList()
+    }
+
 }
 
 private fun countTotalOrbits() {
@@ -25,6 +45,17 @@ private fun countTotalOrbits() {
     println(countOrbits(orbits))
 }
 
+private fun countOrbitalTransfers() {
+    val orbits = parseInput()
+    val ourPath = findPath("COM", "YOU", orbits)
+    val santasPath = findPath("COM", "SAN", orbits)
+    val commonAncestor = ourPath.zip(santasPath).takeWhile { it.first == it.second }.last().first
+    val ourOrbitLength = ourPath.dropWhile { it != commonAncestor }.size - 2
+    val santasOrbitLength = santasPath.dropWhile { it != commonAncestor }.size - 2
+    println(ourOrbitLength + santasOrbitLength)
+}
+
 fun main() {
     countTotalOrbits()
+    countOrbitalTransfers()
 }
