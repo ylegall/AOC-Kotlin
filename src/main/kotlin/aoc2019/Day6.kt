@@ -37,7 +37,6 @@ private fun findPath(
             it.isNotEmpty()
         } ?: emptyList()
     }
-
 }
 
 private fun countTotalOrbits() {

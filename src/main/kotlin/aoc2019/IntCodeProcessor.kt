@@ -5,7 +5,8 @@ import java.io.File
 
 class IntCodeProcessor(
         private val codes: MutableList<Int>,
-        private val inputValue: Int = 0
+        private val inputSupplier: () -> Int = { 0 },
+        private val outputConsumer: (Int) -> Unit = { println(it) }
 ) {
 
     private var ip = 0
@@ -31,7 +32,7 @@ class IntCodeProcessor(
 
     private fun getOpValue(addr: Int, mode: Int) = if (mode == 0) codes.getOrElse(addr) { 0 } else addr
 
-    fun exec() {
+    private fun exec() {
         val ins = parseInstruction()
         when (ins.opcode) {
             1 -> add(ins.op1, ins.op2, ins.op3)
@@ -74,12 +75,12 @@ class IntCodeProcessor(
     }
 
     private fun input(op1: Int) {
-        codes[op1] = inputValue
+        codes[op1] = inputSupplier()
         ip += 2
     }
 
     private fun output(op1: Int) {
-        println(codes[op1])
+        outputConsumer(codes[op1])
         ip += 2
     }
 
