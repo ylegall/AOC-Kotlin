@@ -28,27 +28,30 @@ private object Day7 {
         val amps = phases.map { Amp(it) }
         amps.zipWithNext().forEach { (prev, current) -> current.input = { prev.output.poll() } }
         if (loop) {
-            amps.first().input = { amps.last().output.poll() }
+            amps.first().input = { amps.last().output.poll() ?: 0 }
         }
         return amps
     }
 
-    fun runAmpLoop(codes: List<Int>, phases: Iterable<Int>, loop: Boolean = false): Int {
+    fun runAmpLoop(codes: List<Long>, phases: Iterable<Int>, loop: Boolean = false): Int {
         return phases.permutations().map { phaseSequence ->
-            println(phaseSequence)
-            val amps = initializeAmps(phaseSequence)
-            if (loop) amps.first().output.add(0)
-            amps.forEach { amp ->
-                IntCodeProcessor(
-                        codes.toMutableList(),
-//                        { amp.read().also { println("read $it") } },
-//                        { amp.write(it.also { println("wrote $it") }) }
-                        { amp.read() },
-                        { amp.write(it) }
-                ).run()
+            val amps = initializeAmps(phaseSequence, loop)
+            val processors = amps.map { amp ->
+                IntCodeProcessor(codes.toMutableList(),
+                        { amp.read().toLong() },
+                        { amp.write(it.toInt()) },
+                        pauseOnOutput = true
+                )
             }
-            amps.last().output.peekLast()//.also { println(it) }
-        }.max()!!
+
+            var i = 0
+            while (processors.none { it.state == ProcessorState.HALTED }) {
+                processors[i].run()
+                i = (i + 1) % processors.size
+            }
+            amps.last().output.peekLast()
+
+        }.max() ?: -1
     }
 
     fun findLargestSignal(): Int {
@@ -64,6 +67,6 @@ private object Day7 {
 }
 
 fun main() {
-//    println(Day7.findLargestSignal())
+    println(Day7.findLargestSignal())
     println(Day7.findLargestSignalWithLoop())
 }
