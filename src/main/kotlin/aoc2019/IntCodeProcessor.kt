@@ -113,7 +113,7 @@ class IntCodeProcessor(
     }
 
     private fun output(op1: Long) {
-        println("output $op1")
+        //println("output $op1")
         outputConsumer(read(op1))
         ip += 2
         if (pauseOnOutput) state = PAUSED
