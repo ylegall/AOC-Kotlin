@@ -13,3 +13,13 @@ tailrec fun gcd(x: Long, y: Long): Long {
         gcd(y, x % y)
     }
 }
+
+fun gcd(vararg items: Long) = items.reduce { a, b -> gcd(a, b) }
+
+fun lcm(x: Int, y: Int) = (x * y) / gcd(x, y)
+
+fun lcm(x: Long, y: Long) = (x * y) / gcd(x, y)
+
+fun lcm(vararg items: Long) = items.reduce { a, b -> lcm(a, b) }
+
+fun lcm(vararg items: Int) = items.reduce { a, b -> lcm(a, b) }
