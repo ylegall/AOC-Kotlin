@@ -39,9 +39,8 @@ private object Day7 {
             val processors = amps.map { amp ->
                 IntCodeProcessor(codes.toMutableList(),
                         { amp.read().toLong() },
-                        { amp.write(it.toInt()) },
-                        pauseOnOutput = true
-                )
+                        { amp.write(it.toInt()) }
+                ).apply { pauseOnOutput = true }
             }
 
             var i = 0

@@ -5,14 +5,18 @@ import java.util.Scanner
 
 private object Day13 {
 
-    private class TileGame {
+    private class TileGame(
+            private val screenData: MutableMap<Point, Char> = HashMap()
+    ) {
 
         private var x = 0
         private var y = 0
         private var outputMode = 0
-        private val screenData = HashMap<Point, Char>()
-        private var score = 0
+
+        var score = 0; private set
         private val scanner = Scanner(System.`in`)
+        var ballPosition: Int = 0; private set
+        var paddlePosition: Int = 0; private set
 
         fun write(value: Int) {
             when (outputMode) {
@@ -25,11 +29,15 @@ private object Day13 {
 
         private fun updateScore(value: Int) {
             score = value
-            println("score: $score")
         }
 
         private fun drawPixel(tileId: Int) {
-            screenData[Point(x, y)] = getTileType(tileId)
+            val tile = getTileType(tileId)
+            screenData[Point(x, y)] = tile
+            when (tile) {
+                '*' -> ballPosition = x
+                '-' -> paddlePosition = x
+            }
         }
 
         private fun getTileType(tileId: Int) = when (tileId) {
@@ -42,9 +50,9 @@ private object Day13 {
         }
 
         fun readJoystick() = when (scanner.nextLine().getOrElse(0) { 's' }) {
-            'a' -> -1L
-            'd' -> 1L
-            else -> 0L
+            'a' -> -1
+            'd' -> 1
+            else -> 0
         }
 
         fun countBlockTiles() = screenData.entries.count { it.value == '#' }
@@ -70,19 +78,25 @@ private object Day13 {
         val tileGame = TileGame()
         val processor = IntCodeProcessor(
                 codes,
-                outputConsumer = { tileGame.write(it.toInt()) },
-                inputSupplier = { tileGame.print(); tileGame.readJoystick() }
+                outputConsumer = {
+                    tileGame.write(it.toInt())
+                },
+                inputSupplier = {
+                    //System.`in`.read()
+                    //tileGame.print()
+                    //tileGame.readJoystick()
+                    tileGame.ballPosition.compareTo(tileGame.paddlePosition).toLong()
+                }
         )
-        processor.setMemoryValues(0 to 2)
 
-        while (processor.state != ProcessorState.HALTED) {
-            processor.run()
-        }
+        processor.setMemoryValues(0 to 2)
+        processor.run()
+        println(tileGame.score)
     }
 }
 
 fun main() {
     val codes = loadIntCodeInstructions("inputs/2019/13.txt")
-    //Day13.countBlockTiles(codes)
+    Day13.countBlockTiles(codes)
     Day13.finalScore(codes)
 }

@@ -6,20 +6,25 @@ import java.io.File
 enum class ProcessorState { RUNNING, PAUSED, HALTED }
 
 class IntCodeProcessor(
-        codes: List<Long>,
+        private val memory: MutableMap<Int, Long>,
         private val inputSupplier: () -> Long = { 0L },
-        private val outputConsumer: (Long) -> Unit = { println(it) },
-        var pauseOnOutput: Boolean = false
+        private val outputConsumer: (Long) -> Unit = { println(it) }
 ) {
-    private val memory = HashMap<Int, Long>()
 
-    init {
-        codes.forEachIndexed { index, value -> memory[index] = value }
-    }
+    constructor(
+            codes: List<Long>,
+            inputSupplier: () -> Long = { 0L },
+            outputConsumer: (Long) -> Unit = { println(it) }
+    ): this(
+            codes.mapIndexed { index, value -> index to value }.toMap().toMutableMap(),
+            inputSupplier,
+            outputConsumer
+    )
 
     private var ip = 0
     private var relativeBase = 0L
     var state = RUNNING; private set
+    var pauseOnOutput = false
 
     private class Instruction(
             val opcode: Long,
@@ -131,6 +136,18 @@ class IntCodeProcessor(
     private fun mul(op1: Long, op2: Long, dst: Long) {
         write(dst, read(op1) * read(op2))
         ip += 4
+    }
+
+    fun copy(
+            memory: MutableMap<Int, Long> = this.memory.toMutableMap(),
+            inputSupplier: () -> Long = this.inputSupplier,
+            outputConsumer: (Long) -> Unit = this.outputConsumer
+    ): IntCodeProcessor {
+        val processor = IntCodeProcessor(memory, inputSupplier, outputConsumer)
+        processor.ip = ip
+        processor.pauseOnOutput = pauseOnOutput
+        processor.relativeBase = relativeBase
+        return processor
     }
 
     fun run() {
