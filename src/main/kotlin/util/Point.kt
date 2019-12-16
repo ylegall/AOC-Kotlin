@@ -21,3 +21,11 @@ val pointComparator = compareBy<Point>({ it.y }, { it.x })
 fun Point.mDist(point: Point) = mDist(point.x, point.y)
 
 fun Point.mDist(x: Int, y: Int) = abs(this.x - x) + abs(this.y - y)
+
+fun enclosingRect(points: Iterable<Point>): Pair<Point, Point> {
+    val minX = points.minBy { it.x }!!.x
+    val minY = points.minBy { it.y }!!.y
+    val maxX = points.maxBy { it.x }!!.x
+    val maxY = points.maxBy { it.y }!!.y
+    return Point(minX, minY) to Point(maxX, maxY)
+}

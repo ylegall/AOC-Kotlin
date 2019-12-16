@@ -2,6 +2,7 @@ package aoc2019
 
 import util.Direction
 import util.Point
+import util.enclosingRect
 import util.move
 
 private object Day11 {
@@ -50,9 +51,9 @@ private object Day11 {
         }
     }
 
-    fun paintHull() {
+    fun paintHull(paintStartPanel: Boolean = false) {
         val codes = loadIntCodeInstructions("inputs/2019/11.txt")
-        val bot = HullPaintBot(true)
+        val bot = HullPaintBot(paintStartPanel)
 
         val processor = IntCodeProcessor(
                 codes,
@@ -62,22 +63,20 @@ private object Day11 {
         processor.run()
         println("painted panels: " + bot.allPaintedPositions.size)
 
-        val minX = bot.allPaintedPositions.minBy { it.x }!!.x
-        val minY = bot.allPaintedPositions.minBy { it.y }!!.y
-        val maxX = bot.allPaintedPositions.maxBy { it.x }!!.x
-        val maxY = bot.allPaintedPositions.maxBy { it.y }!!.y
-
-        val image = (minY..maxY).joinToString("\n") { y ->
-            (minX..maxX).joinToString("") { x ->
-                if (Point(x, y) in bot.whitePanels) "#" else " "
+        if (paintStartPanel) {
+            val (minPoint, maxPoint) = enclosingRect(bot.allPaintedPositions)
+            val image = (minPoint.y .. maxPoint.y).joinToString("\n") { y ->
+                (minPoint.x .. maxPoint.x).joinToString("") { x ->
+                    if (Point(x, y) in bot.whitePanels) "#" else " "
+                }
             }
+            println(image)
         }
-        println(image)
     }
 
 }
 
 fun main() {
     Day11.paintHull()
-    Day11.paintHull()
+    Day11.paintHull(true)
 }
