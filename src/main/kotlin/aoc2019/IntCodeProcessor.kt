@@ -21,7 +21,7 @@ class IntCodeProcessor(
     private var relativeBase = 0L
     var state = RUNNING; private set
 
-    class Instruction(
+    private class Instruction(
             val opcode: Long,
             val op1: Long,
             val op2: Long = 0,
@@ -45,6 +45,10 @@ class IntCodeProcessor(
         1L -> addr.toLong()
         2L -> read(addr) + relativeBase
         else -> throw Exception("unsupported mode: $mode")
+    }
+
+    fun setMemoryValues(vararg values: Pair<Int, Long>) {
+        values.forEach { memory[it.first] = it.second }
     }
 
     private fun read(idx: Int): Long {

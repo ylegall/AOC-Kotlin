@@ -23,3 +23,7 @@ fun lcm(x: Long, y: Long) = (x * y) / gcd(x, y)
 fun lcm(vararg items: Long) = items.reduce { a, b -> lcm(a, b) }
 
 fun lcm(vararg items: Int) = items.reduce { a, b -> lcm(a, b) }
+
+infix fun Int.ceilDiv(divisor: Int): Int = -Math.floorDiv(-this, divisor)
+
+infix fun Long.ceilDiv(divisor: Long): Long = -Math.floorDiv(-this, divisor)
