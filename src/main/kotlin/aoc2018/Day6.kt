@@ -2,7 +2,6 @@ package aoc2018
 
 import util.Point
 import util.input
-import util.mDist
 import kotlin.streams.asSequence
 
 private inline fun <T, R: Comparable<R>> Iterable<T>.minByOrNull(selector: (T) -> R): T? {

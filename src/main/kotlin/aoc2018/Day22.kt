@@ -6,7 +6,6 @@ import aoc2018.Day22.Gear.TORCH
 import util.Direction
 import util.Point
 import util.enumSetOf
-import util.mDist
 import util.move
 import java.util.PriorityQueue
 import kotlin.time.ExperimentalTime

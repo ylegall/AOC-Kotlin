@@ -1,7 +1,6 @@
 package aoc2019
 
 import util.Point
-import util.mDist
 import java.io.File
 
 private typealias Directions = List<Pair<Char, Int>>

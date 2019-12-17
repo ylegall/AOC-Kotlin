@@ -1,7 +1,6 @@
 package aoc2016
 
 import util.Point
-import util.mDist
 import java.io.File
 
 private object Day1 {
