@@ -14,13 +14,20 @@ data class Point(
     operator fun minus(other: Point) = Point(x - other.x, y - other.y)
 
     operator fun times(magnitude: Int) = Point(x * magnitude, y * magnitude)
+
+    fun mDist(x: Int, y: Int) = abs(this.x - x) + abs(this.y - y)
+
+    fun mDist(point: Point) = mDist(point.x, point.y)
+
+    fun cardinalNeighbors() = listOf(
+            Point(x - 1, y),
+            Point(x, y + 1),
+            Point(x + 1, y),
+            Point(x, y - 1)
+    )
 }
 
 val pointComparator = compareBy<Point>({ it.y }, { it.x })
-
-fun Point.mDist(point: Point) = mDist(point.x, point.y)
-
-fun Point.mDist(x: Int, y: Int) = abs(this.x - x) + abs(this.y - y)
 
 fun enclosingRect(points: Iterable<Point>): Pair<Point, Point> {
     val minX = points.minBy { it.x }!!.x
