@@ -4,11 +4,12 @@ private object Day2 {
 
     private const val TARGET = 19690720L
 
-    private fun processWithInitialSettings(codes: MutableList<Long>, a: Long = 0L, b: Long = 0L): Long {
-        codes[1] = a
-        codes[2] = b
-        IntCodeProcessor(codes).run()
-        return codes[0]
+    private fun processWithInitialSettings(codes: Iterable<Long>, a: Long = 0L, b: Long = 0L): Long {
+        val processor = IntCodeProcessor(codes).apply {
+            setMemoryValues(1 to a, 2 to b)
+        }
+        processor.run()
+        return processor.read(0)
     }
 
     fun findValueAtPositionZero(): Long {

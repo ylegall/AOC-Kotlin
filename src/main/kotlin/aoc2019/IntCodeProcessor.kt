@@ -12,7 +12,7 @@ class IntCodeProcessor(
 ) {
 
     constructor(
-            codes: List<Long>,
+            codes: Iterable<Long>,
             inputSupplier: () -> Long = { 0L },
             outputConsumer: (Long) -> Unit = { println(it) }
     ): this(
@@ -56,7 +56,7 @@ class IntCodeProcessor(
         values.forEach { memory[it.first] = it.second }
     }
 
-    private fun read(idx: Int): Long {
+    fun read(idx: Int): Long {
         check(idx >= 0) { "invalid memory address: $idx" }
         return memory[idx] ?: 0L
     }
@@ -161,4 +161,4 @@ class IntCodeProcessor(
 
 fun loadIntCodeInstructions(filePath: String) = File(filePath).readText().trim().split(",").map {
     it.toLong()
-}.toMutableList()
+}

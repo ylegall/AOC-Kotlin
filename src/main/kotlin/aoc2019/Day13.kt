@@ -67,14 +67,14 @@ private object Day13 {
         }
     }
 
-    fun countBlockTiles(codes: MutableList<Long>) {
+    fun countBlockTiles(codes: Iterable<Long>) {
         val tileGame = TileGame()
         val processor = IntCodeProcessor(codes, outputConsumer = { tileGame.write(it.toInt()) })
         processor.run()
         println(tileGame.countBlockTiles())
     }
 
-    fun finalScore(codes: MutableList<Long>) {
+    fun finalScore(codes: Iterable<Long>) {
         val tileGame = TileGame()
         val processor = IntCodeProcessor(
                 codes,
