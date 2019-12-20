@@ -150,6 +150,8 @@ class IntCodeProcessor(
         return processor
     }
 
+    fun pause() { state = PAUSED }
+
     fun run() {
         if (state == HALTED) return
         state = RUNNING
