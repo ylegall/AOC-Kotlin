@@ -1,8 +1,6 @@
 package aoc2016
 
-import util.Direction
 import util.Point
-import util.move
 import util.permutations
 import java.io.File
 import java.util.ArrayDeque
@@ -26,7 +24,7 @@ private object Day24 {
             it.second
         }
 
-        fun Point.neighbors() = Direction.values().map { move(it) }.filter { get(it) != '#' }
+        fun Point.neighbors() = cardinalNeighbors().filter { get(it) != '#' }
 
         private fun get(point: Point) = when {
             point.x !in data.indices -> '#'
@@ -50,7 +48,11 @@ private object Day24 {
                     }
                 }
                 seen.add(currentPos)
-                val nextStates = currentPos.neighbors().filter { it !in seen }.map { SearchState(it, currentSteps + 1) }
+                val nextStates = currentPos.neighbors().filter {
+                    it !in seen
+                }.map {
+                    SearchState(it, currentSteps + 1)
+                }
                 q.addAll(nextStates)
             }
             return minStepsToTargets
