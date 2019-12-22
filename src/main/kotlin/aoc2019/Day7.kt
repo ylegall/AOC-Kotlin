@@ -37,10 +37,10 @@ private object Day7 {
         return phases.permutations().map { phaseSequence ->
             val amps = initializeAmps(phaseSequence, loop)
             val processors = amps.map { amp ->
-                IntCodeProcessor(codes.toMutableList(),
-                        { amp.read().toLong() },
-                        { amp.write(it.toInt()) }
-                ).apply { pauseOnOutput = true }
+                intCodeProcessor(codes) {
+                    inputSupplier = { amp.read().toLong() }
+                    outputConsumer = { amp.write(it.toInt()); pause() }
+                }
             }
 
             var i = 0

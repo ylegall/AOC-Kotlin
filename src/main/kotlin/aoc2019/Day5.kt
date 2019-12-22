@@ -4,12 +4,16 @@ private object Day5 {
 
     fun diagnosticValuePart1() {
         val codes = loadIntCodeInstructions("inputs/2019/5.txt")
-        IntCodeProcessor(codes, { 1 }).run()
+        intCodeProcessor(codes) {
+            inputSupplier = { 1 }
+        }.run()
     }
 
     fun diagnosticValuePart2() {
         val codes = loadIntCodeInstructions("inputs/2019/5.txt")
-        IntCodeProcessor(codes, { 5 }).run()
+        intCodeProcessor(codes) {
+            inputSupplier = { 5 }
+        }.run()
     }
 }
 

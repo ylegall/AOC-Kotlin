@@ -19,11 +19,10 @@ private object Day15 {
             add(State(Point(0, 0), 0, Direction.NORTH))
         }
 
-        private val processor = IntCodeProcessor(
-                codes,
-                inputSupplier = { getNextMove() },
-                outputConsumer = { updateMap(it) }
-        )
+        private val processor = intCodeProcessor(codes) {
+            inputSupplier = { getNextMove() }
+            outputConsumer = { updateMap(it) }
+        }
 
         private fun pos() = stack.peek().pos
 

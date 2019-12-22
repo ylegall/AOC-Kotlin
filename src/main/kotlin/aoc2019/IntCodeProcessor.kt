@@ -5,26 +5,18 @@ import java.io.File
 
 enum class ProcessorState { RUNNING, PAUSED, HALTED }
 
-class IntCodeProcessor(
-        private val memory: MutableMap<Int, Long>,
-        private val inputSupplier: () -> Long = { 0L },
-        private val outputConsumer: (Long) -> Unit = { println(it) }
-) {
+class IntCodeProcessor(private val memory: MutableMap<Int, Long>) {
 
-    constructor(
-            codes: Iterable<Long>,
-            inputSupplier: () -> Long = { 0L },
-            outputConsumer: (Long) -> Unit = { println(it) }
-    ): this(
-            codes.mapIndexed { index, value -> index to value }.toMap().toMutableMap(),
-            inputSupplier,
-            outputConsumer
+    constructor(codes: Iterable<Long>): this(
+            codes.mapIndexed { index, value -> index to value }.toMap().toMutableMap()
     )
 
     private var ip = 0
     private var relativeBase = 0L
     var state = RUNNING; private set
-    var pauseOnOutput = false
+
+    var inputSupplier: () -> Long = { 0L }
+    var outputConsumer: (Long) -> Unit = { println(it) }
 
     private class Instruction(
             val opcode: Long,
@@ -125,7 +117,6 @@ class IntCodeProcessor(
         //println("output $op1")
         outputConsumer(read(op1))
         ip += 2
-        if (pauseOnOutput) state = PAUSED
     }
 
     private fun add(op1: Long, op2: Long, dst: Long) {
@@ -143,9 +134,10 @@ class IntCodeProcessor(
             inputSupplier: () -> Long = this.inputSupplier,
             outputConsumer: (Long) -> Unit = this.outputConsumer
     ): IntCodeProcessor {
-        val processor = IntCodeProcessor(memory, inputSupplier, outputConsumer)
+        val processor = IntCodeProcessor(memory)
+        processor.inputSupplier = inputSupplier
+        processor.outputConsumer = outputConsumer
         processor.ip = ip
-        processor.pauseOnOutput = pauseOnOutput
         processor.relativeBase = relativeBase
         return processor
     }
@@ -163,4 +155,13 @@ class IntCodeProcessor(
 
 fun loadIntCodeInstructions(filePath: String) = File(filePath).readText().trim().split(",").map {
     it.toLong()
+}
+
+inline fun intCodeProcessor(
+        codes: Iterable<Long>,
+        builder: IntCodeProcessor.() -> Unit
+): IntCodeProcessor {
+    val processor = IntCodeProcessor(codes)
+    builder(processor)
+    return processor
 }

@@ -23,8 +23,8 @@ private fun computePhase(input: List<Int>): List<Int> {
     }.toList()
 }
 
-fun computeFirst8DigitsAfter100Phases(input: List<Int>) {
-    var input = input
+fun computeFirst8DigitsAfter100Phases(originalInput: List<Int>) {
+    var input = originalInput
     repeat(100) { input = computePhase(input) }
     val first8Digits = input.take(8).joinToString("")
     println(first8Digits)

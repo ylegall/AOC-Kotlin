@@ -69,27 +69,25 @@ private object Day13 {
 
     fun countBlockTiles(codes: Iterable<Long>) {
         val tileGame = TileGame()
-        val processor = IntCodeProcessor(codes, outputConsumer = { tileGame.write(it.toInt()) })
+        val processor = intCodeProcessor(codes) {
+            outputConsumer = { tileGame.write(it.toInt()) }
+        }
         processor.run()
         println(tileGame.countBlockTiles())
     }
 
     fun finalScore(codes: Iterable<Long>) {
         val tileGame = TileGame()
-        val processor = IntCodeProcessor(
-                codes,
-                outputConsumer = {
-                    tileGame.write(it.toInt())
-                },
-                inputSupplier = {
-                    //System.`in`.read()
-                    //tileGame.print()
-                    //tileGame.readJoystick()
-                    tileGame.ballPosition.compareTo(tileGame.paddlePosition).toLong()
-                }
-        )
-
-        processor.setMemoryValues(0 to 2)
+        val processor = intCodeProcessor(codes) {
+            outputConsumer = { tileGame.write(it.toInt()) }
+            inputSupplier = {
+                //System.`in`.read()
+                //tileGame.print()
+                //tileGame.readJoystick()
+                tileGame.ballPosition.compareTo(tileGame.paddlePosition).toLong()
+            }
+            setMemoryValues(0 to 2)
+        }
         processor.run()
         println(tileGame.score)
     }

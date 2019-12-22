@@ -25,12 +25,10 @@ private fun testTractorBeam(codes: Iterable<Long>, x: Int, y: Int): Int {
         yield(y)
     }.iterator()
 
-    val processor = IntCodeProcessor(
-            codes,
-            inputSupplier = { inputs.next().toLong() },
-            outputConsumer = { output = it }
-    )
-    processor.pauseOnOutput = true
+    val processor = intCodeProcessor(codes) {
+        inputSupplier = { inputs.next().toLong() }
+        outputConsumer = { output = it; pause() }
+    }
     processor.run()
     return output.toInt()
 }

@@ -55,11 +55,10 @@ private object Day11 {
         val codes = loadIntCodeInstructions("inputs/2019/11.txt")
         val bot = HullPaintBot(paintStartPanel)
 
-        val processor = IntCodeProcessor(
-                codes,
-                { if (bot.isPanelPainted()) 1 else 0 },
-                { bot.input(it) }
-        )
+        val processor = intCodeProcessor(codes) {
+            inputSupplier = { if (bot.isPanelPainted()) 1 else 0 }
+            outputConsumer = { bot.input(it) }
+        }
         processor.run()
         println("painted panels: " + bot.allPaintedPositions.size)
 

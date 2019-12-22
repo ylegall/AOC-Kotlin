@@ -1,11 +1,15 @@
 package aoc2019
 
 private fun getBoostKeycode(codes: List<Long>) {
-    IntCodeProcessor(codes, inputSupplier = { 1 }).run()
+    intCodeProcessor(codes) {
+        inputSupplier = { 1 }
+    }.run()
 }
 
 private fun findDistressCoordinates(codes: List<Long>) {
-    IntCodeProcessor(codes, inputSupplier = { 2 }).run()
+    intCodeProcessor(codes) {
+        inputSupplier = { 2 }
+    }.run()
 }
 
 fun main() {

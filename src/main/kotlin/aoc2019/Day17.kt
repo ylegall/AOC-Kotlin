@@ -11,17 +11,16 @@ private object Day17 {
     private fun getCameraData(codes: Iterable<Long>): List<String> {
         val scanline = StringBuilder()
         val imageData = mutableListOf<String>()
-        val processor = IntCodeProcessor(
-                codes,
-                outputConsumer = {
-                    if (it == 10L) {
-                        imageData.add(scanline.toString())
-                        scanline.clear()
-                    } else {
-                        scanline.append(it.toChar())
-                    }
+        val processor = intCodeProcessor(codes) {
+            outputConsumer = {
+                if (it == 10L) {
+                    imageData.add(scanline.toString())
+                    scanline.clear()
+                } else {
+                    scanline.append(it.toChar())
                 }
-        )
+            }
+        }
         processor.run()
         return imageData
     }
@@ -161,11 +160,10 @@ private object Day17 {
         println(moveQueue)
 
         var totalDust = 0L
-        val processor = IntCodeProcessor(
-                codes,
-                inputSupplier = { moveQueue.poll()?.toLong() ?: 0L },
-                outputConsumer = { totalDust = it }
-        )
+        val processor = intCodeProcessor(codes) {
+            inputSupplier = { moveQueue.poll()?.toLong() ?: 0L }
+            outputConsumer = { totalDust = it }
+        }
         processor.setMemoryValues(0 to 2)
 
         processor.run()
