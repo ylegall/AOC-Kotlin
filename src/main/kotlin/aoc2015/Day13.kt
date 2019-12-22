@@ -1,8 +1,7 @@
 package aoc2015
 
-import util.input
 import util.permutations
-import kotlin.streams.asSequence
+import java.io.File
 
 
 private fun parseInput(lines: Sequence<String>): Map<Pair<String, String>, Int> {
@@ -43,7 +42,7 @@ private fun maxHappinessWithGap(happinessMap: Map<Pair<String, String>, Int>): I
 }
 
 fun main() {
-    val happinessMap = input("inputs/2015/13.txt").use { lines ->
+    val happinessMap = File("inputs/2015/13.txt").useLines { lines ->
         parseInput(lines.asSequence())
     }
 

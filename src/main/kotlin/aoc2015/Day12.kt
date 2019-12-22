@@ -2,8 +2,7 @@ package aoc2015
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import util.input
-import kotlin.streams.toList
+import java.io.File
 
 private val integerPattern = Regex("-?\\d+")
 
@@ -30,7 +29,7 @@ private fun jsonSum(node: JsonElement): Int {
 private fun JsonElement.isRed() = this.isJsonPrimitive && this.asString == "red"
 
 fun main() {
-    val input = input("inputs/2015/12.txt").use { it.toList().joinToString("") }
+    val input = File("inputs/2015/12.txt").useLines { it.toList().joinToString("") }
 
     println(integerPattern.findAll(input).mapNotNull { it.value.toInt() }.sum())
 

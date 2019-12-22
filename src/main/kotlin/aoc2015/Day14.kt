@@ -1,7 +1,6 @@
 package aoc2015
 
-import util.input
-import kotlin.streams.toList
+import java.io.File
 
 object Day14 {
     private const val SECONDS = 2503
@@ -43,7 +42,7 @@ object Day14 {
     }
 
     fun run() {
-        val reindeers = input("inputs/2015/14.txt").use { lines ->
+        val reindeers = File("inputs/2015/14.txt").useLines { lines ->
             lines.toList().map { it.toReindeer() }
         }
         println(reindeers.map { it.distanceAfterSeconds(SECONDS) }.max())
