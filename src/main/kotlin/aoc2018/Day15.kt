@@ -1,8 +1,6 @@
 package aoc2018
 
-import util.Direction
 import util.Point
-import util.move
 import java.io.File
 import java.util.ArrayDeque
 import java.util.Arrays
@@ -31,7 +29,7 @@ private object Day15 {
     ) {
         private fun Point.value() = grid[y][x]
 
-        private fun Point.neighbors() = Direction.values().map { move(it) }.filter { it.value() != '#' }
+        private fun Point.neighbors() = cardinalNeighbors().filter { it.value() != '#' }
 
         private fun Point.openNeighbors() = neighbors().filter { it.value() == '.' }
 
