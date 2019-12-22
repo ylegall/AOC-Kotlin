@@ -1,39 +1,20 @@
 package aoc2016
 
-import aoc2016.Day13.Cell
 import aoc2016.Day13.minStepsToGoal
 import aoc2016.Day13.reachableCellsUnder50
+import util.Point
 import java.util.*
 import kotlin.Comparator
-import kotlin.math.abs
 
 
 object Day13 {
 
-    data class Cell(
-            val x: Int,
-            val y: Int
-    ) {
-        val isOpen: Boolean = isOpen(x, y)
-
-        fun neighbors() = listOf(
-                Cell(x + 1, y),
-                Cell(x - 1, y),
-                Cell(x    , y + 1),
-                Cell(x    , y - 1)
-        ).filter {
-            it.isOpen
-        }
-
-        fun distanceFrom(other: Cell) = abs(x - other.x) + abs(y - other.y)
-    }
-
     data class State(
-        val pos: Cell,
-        val steps: Int = 0
+            val pos: Point,
+            val steps: Int = 0
     )
 
-    fun isOpen(x: Int, y: Int): Boolean {
+    private fun isOpen(x: Int, y: Int): Boolean {
         if (x < 0 || y < 0) {
             return false
         }
@@ -42,9 +23,9 @@ object Day13 {
         return bits % 2 == 0
     }
 
-    fun minStepsToGoal(start: Cell, goal: Cell): Int {
-        val seen = mutableSetOf<Cell>()
-        val q = PriorityQueue<State>(Comparator.comparingInt { it.steps + it.pos.distanceFrom(goal) })
+    fun minStepsToGoal(start: Point, goal: Point): Int {
+        val seen = mutableSetOf<Point>()
+        val q = PriorityQueue<State>(Comparator.comparingInt { it.steps + it.pos.mDist(goal) })
         q.add(State(start))
         while (q.isNotEmpty()) {
             val (pos, steps) = q.poll()
@@ -53,15 +34,20 @@ object Day13 {
                     return steps
                 }
                 seen.add(pos)
-                q.addAll(pos.neighbors().filter { it !in seen }.map { State(it, steps + 1) })
+                val neighbors = pos.cardinalNeighbors().filter {
+                    it !in seen && isOpen(it.x, it.y)
+                }.map {
+                    State(it, steps + 1)
+                }
+                q.addAll(neighbors)
             }
         }
         throw Exception("ran out of moves")
     }
 
-    fun reachableCellsUnder50(start: Cell): Int {
+    fun reachableCellsUnder50(start: Point): Int {
         var count = 0
-        val seen = mutableSetOf<Cell>()
+        val seen = mutableSetOf<Point>()
         val q = PriorityQueue<State>(Comparator.comparingInt { it.steps })
         q.add(State(start))
         while (q.isNotEmpty()) {
@@ -71,25 +57,30 @@ object Day13 {
                     count++
                 }
                 seen.add(pos)
-                q.addAll(pos.neighbors().filter { it !in seen }.map { State(it, steps + 1) })
+                val neighbors = pos.cardinalNeighbors().filter {
+                    it !in seen && isOpen(it.x, it.y)
+                }.map {
+                    State(it, steps + 1)
+                }
+                q.addAll(neighbors)
             }
         }
         return count
     }
 
-    fun printGrid(seen: Set<Cell> = emptySet()) {
+    fun printGrid(seen: Set<Point> = emptySet()) {
         (0..30).forEach { x ->
             (0..30).forEach{ y ->
-                val cell = Cell(x, y)
-                print(if (cell in seen) 'X' else if (cell.isOpen) '.' else '=')
+                val cell = Point(x, y)
+                print(if (cell in seen) 'X' else if (isOpen(x, y)) '.' else '=')
             }.also { println() }
         }
     }
 }
 
 fun main() {
-    val start = Cell(1, 1)
-    val end = Cell(31, 39)
+    val start = Point(1, 1)
+    val end = Point(31, 39)
 
     println(minStepsToGoal(start, end))
     println(reachableCellsUnder50(start))
