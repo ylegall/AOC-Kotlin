@@ -1,5 +1,6 @@
 package util
 
+import java.util.ArrayDeque
 import java.util.EnumSet
 
 fun <T> Iterable<T>.permutations(): List<List<T>> {
@@ -49,4 +50,8 @@ fun <T> List<T>.swap(a: Int, b: Int): List<T> {
         copy.add(this[i])
     }
     return copy
+}
+
+fun <T> arrayDequeOf(vararg items: T) = ArrayDeque<T>(items.size).apply {
+    addAll(items)
 }
