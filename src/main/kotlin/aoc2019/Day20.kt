@@ -2,7 +2,6 @@ package aoc2019
 
 import util.Point
 import util.get
-import java.awt.Label
 import java.io.File
 import java.util.ArrayDeque
 
