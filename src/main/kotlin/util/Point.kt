@@ -37,6 +37,12 @@ fun enclosingRect(points: Iterable<Point>): Pair<Point, Point> {
     return Point(minX, minY) to Point(maxX, maxY)
 }
 
+operator fun List<String>.get(point: Point) = this[point.y][point.x]
+operator fun List<String>.get(row: Int, col: Int) = get(row)[col]
+
+fun List<String>.getOrNull(row: Int, col: Int) = getOrNull(row)?.getOrNull(col)
+fun List<String>.getOrNull(point: Point) = getOrNull(point.y)?.getOrNull(point.x)
+
 inline fun <T> Iterable<Collection<T>>.findPoint(predicate: (T) -> Boolean): Point? = mapIndexed { y, row ->
     row.mapIndexed { x, item ->
         Point(x, y) to item
