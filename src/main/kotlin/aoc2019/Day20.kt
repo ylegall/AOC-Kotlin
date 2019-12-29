@@ -1,69 +1,97 @@
 package aoc2019
 
 import util.Point
-import util.get
 import java.io.File
 import java.util.ArrayDeque
+import java.util.PriorityQueue
 
 private object Day20 {
 
     private val maze = File("inputs/2019/20.txt").readLines()
+
+    private val topInteriorRow = maze.indices.drop(2).first { row -> maze[row].trim().contains(' ') } - 1
+    private val bottomInteriorRow = maze.indices.reversed().drop(2).first { row -> maze[row].trim().contains(' ') } + 1
+    private val leftInteriorCol = maze[topInteriorRow + 1].trim().indexOf(' ') + 2 - 1
+    private val rightInteriorCol = maze[topInteriorRow + 1].trim().lastIndexOf(' ') + 2 + 1
+
     private var start = Point(0, 0)
     private var stop = Point(0, 0)
-    private val portals = scanMaze()
+    private val portalPairs = findPortals()
+    private val portalPoints = portalPairs.entries.associate { it.key.pos to it.key }
 
-    private fun scanMaze(): Map<Point, Point> {
-        val labels = mutableMapOf<String, MutableList<Point>>()
+    private data class Portal(
+            val label: String,
+            val pos: Point,
+            val isInterior: Boolean
+    )
 
-        fun appendLabel(label: String, x: Int, y: Int) {
-            labels.getOrPut(label) { mutableListOf() }.add(Point(x, y))
+    private fun findPortals(): Map<Portal, Portal> {
+        val portalPairs = mutableMapOf<String, MutableList<Portal>>()
+        val lastRow = maze.size - 3
+        val lastCol = maze[0].length - 3
+
+        fun addPortals(points: Iterable<Pair<Point, String>>, interior: Boolean = false) = points.filter {
+            it.second[0].isLetter()
+        }.forEach { (pos, label) ->
+            val portal = Portal(label, pos, interior)
+            portalPairs.getOrPut(label) { mutableListOf() }.add(portal)
         }
 
-        fun checkForLabel(x: Int, y: Int) {
-            val top1 = maze[y-2, x]
-            val top2 = maze[y-1, x]
-            if (top1.isLetter() and top2.isLetter()) {
-                appendLabel("$top1$top2", x, y)
-                return
-            }
-            val bottom1 = maze[y+1, x]
-            val bottom2 = maze[y+2, x]
-            if (bottom1.isLetter() and bottom2.isLetter()) {
-                appendLabel("$bottom1$bottom2", x, y)
-                return
-            }
-            val right1 = maze[y, x+1]
-            val right2 = maze[y, x+2]
-            if (right1.isLetter() and right2.isLetter()) {
-                appendLabel("$right1$right2", x, y)
-                return
-            }
-            val left1 = maze[y, x-2]
-            val left2 = maze[y, x-1]
-            if (left1.isLetter() and left2.isLetter()) {
-                appendLabel("$left1$left2", x, y)
-                return
-            }
-        }
+        // top exterior
+        addPortals(maze[2].indices.map { col ->
+            Point(col, 2) to "${maze[0][col]}${maze[1][col]}"
+        })
+        // bottom exterior
+        addPortals(maze[lastRow].indices.map { col ->
+            Point(col, lastRow) to "${maze[lastRow + 1][col]}${maze[lastRow + 2][col]}"
+        })
+        // left exterior
+        addPortals(maze.indices.map { row ->
+            Point(2, row) to "${maze[row][0]}${maze[row][1]}"
+        })
+        // right exterior
+        addPortals(maze.indices.map { row ->
+            Point(lastCol, row) to "${maze[row][lastCol + 1]}${maze[row][lastCol + 2]}"
+        })
 
-        for (y in 2 until maze.size - 2) {
-            val row = maze[y]
-            for (x in 2 until row.length - 2) {
-                if (maze[y][x] != '.') continue
-                checkForLabel(x, y)
-            }
-        }
+        // top interior
+        addPortals(
+                maze[topInteriorRow].indices.map { col ->
+                    Point(col, topInteriorRow) to "${maze[topInteriorRow + 1][col]}${maze[topInteriorRow + 2][col]}"
+                },
+                interior = true
+        )
 
-        start = labels["AA"]!!.first()
-        stop = labels["ZZ"]!!.first()
+        // bottom interior
+        addPortals(
+                maze[bottomInteriorRow].indices.map { col ->
+                    Point(col, bottomInteriorRow) to "${maze[bottomInteriorRow - 2][col]}${maze[bottomInteriorRow - 1][col]}"
+                },
+                interior = true
+        )
+        // left interior
+        addPortals(
+                (topInteriorRow..bottomInteriorRow).map { row ->
+                    Point(leftInteriorCol, row) to "${maze[row][leftInteriorCol + 1]}${maze[row][leftInteriorCol + 2]}"
+                },
+                interior = true
+        )
+        // right interior
+        addPortals(
+                (topInteriorRow..bottomInteriorRow).map { row ->
+                    Point(rightInteriorCol, row) to "${maze[row][rightInteriorCol - 2]}${maze[row][rightInteriorCol - 1]}"
+                },
+                interior = true
+        )
 
-        val portals = labels.entries.filter {
-            it.key != "ZZ" && it.key != "AA"
-        }
-        portals.forEach { (k, v) ->
-            check(v.size == 2) { "invalid entry: $k:$v" }
-        }
-        return portals.flatMap { it.value.let { listOf(it.first() to it.last(), it.last() to it.first()) }}.toMap()
+        start = portalPairs["AA"]!![0].pos
+        stop = portalPairs["ZZ"]!![0].pos
+
+        return portalPairs.entries.filter {
+            it.value.size == 2
+        }.flatMap {
+            listOf(it.value[0] to it.value[1], it.value[1] to it.value[0])
+        }.toMap()
     }
 
     private fun shortestPath(): Int {
@@ -76,18 +104,73 @@ private object Day20 {
                 return steps
             }
             seen.add(pos)
-            val neighbors = pos.cardinalNeighbors().filter {
-                maze[it.y][it.x] == '.' && it !in seen
-            }.let {
-                if (pos in portals) it + portals[pos]!! else it
+
+            val nextPortalPosition = portalPoints[pos]?.let {
+                portalPairs[it]
+            }?.pos?.takeIf { it !in seen }
+
+            val nextPoints = if (nextPortalPosition != null) {
+                listOf(nextPortalPosition to steps + 1)
+            } else {
+                pos.cardinalNeighbors().filter {
+                    maze[it.y][it.x] == '.' && it !in seen
+                }.map { it to steps + 1 }
             }
-            queue.addAll(neighbors.map { it to steps + 1 })
+
+            queue.addAll(nextPoints)
+        }
+        throw Exception("goal not found")
+    }
+
+    private data class SearchState(
+            val pos: Point,
+            val steps: Int = 0,
+            val depth: Int = 0
+    )
+
+    private fun shortestPathRecursive(): Int {
+        val seen = HashSet<Pair<Point, Int>>()
+        val queue = PriorityQueue<SearchState>( compareBy({ it.steps }, { -it.depth }) )
+        queue.add(SearchState(start))
+
+        while (queue.isNotEmpty()) {
+            val (pos, steps, depth) = queue.poll()
+            if (pos == stop && depth == 0) {
+                return steps
+            }
+            seen.add(pos to depth)
+
+            val nextHop = if (pos in portalPoints) {
+                val portal = portalPoints[pos]!!
+                val nextPos = portalPairs[portal]!!.pos
+                val nextDepth = if (portal.isInterior) depth + 1 else depth - 1
+                if ((nextPos to nextDepth) !in seen) {
+                    (nextPos to nextDepth)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+
+            val nextStates = if (nextHop != null) {
+                listOf(SearchState(nextHop.first, nextHop.second, steps + 1))
+            } else {
+                pos.cardinalNeighbors().filter {
+                    maze[it.y][it.x] == '.' && (it to depth) !in seen
+                }.map {
+                    SearchState(it, depth, steps + 1)
+                }
+            }
+            queue.addAll(nextStates)
         }
         throw Exception("goal not found")
     }
 
     fun run() {
+
         println(shortestPath())
+        println(shortestPathRecursive())
     }
 }
 
