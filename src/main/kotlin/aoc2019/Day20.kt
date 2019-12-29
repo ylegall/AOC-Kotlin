@@ -18,7 +18,7 @@ private object Day20 {
     private var stop = Point(0, 0)
     private val portalPairs = findPortals()
     private val portalPoints = portalPairs.entries.associate { it.key.pos to it.key }
-
+    
     private data class Portal(
             val label: String,
             val pos: Point,
@@ -84,9 +84,9 @@ private object Day20 {
                 interior = true
         )
 
-        start = portalPairs["AA"]!![0].pos
-        stop = portalPairs["ZZ"]!![0].pos
-
+        start = portalPairs["AA"]!!.first().pos
+        stop = portalPairs["ZZ"]!!.first().pos
+        
         return portalPairs.entries.filter {
             it.value.size == 2
         }.flatMap {
@@ -94,7 +94,7 @@ private object Day20 {
         }.toMap()
     }
 
-    private fun shortestPath(): Int {
+    private fun shortestPathPart1(): Int {
         val seen = HashSet<Point>()
         val queue = ArrayDeque<Pair<Point, Int>>()
         queue.add(start to 0)
@@ -128,9 +128,9 @@ private object Day20 {
             val depth: Int = 0
     )
 
-    private fun shortestPathRecursive(): Int {
+    private fun shortestPathPart2(): Int {
         val seen = HashSet<Pair<Point, Int>>()
-        val queue = PriorityQueue<SearchState>( compareBy({ it.steps }, { -it.depth }) )
+        val queue = PriorityQueue<SearchState>( compareBy({ it.steps}, { it.depth }) )
         queue.add(SearchState(start))
 
         while (queue.isNotEmpty()) {
@@ -140,26 +140,19 @@ private object Day20 {
             }
             seen.add(pos to depth)
 
-            val nextHop = if (pos in portalPoints) {
-                val portal = portalPoints[pos]!!
+            val nextHop = portalPoints[pos]?.let { portal ->
                 val nextPos = portalPairs[portal]!!.pos
                 val nextDepth = if (portal.isInterior) depth + 1 else depth - 1
-                if ((nextPos to nextDepth) !in seen) {
-                    (nextPos to nextDepth)
-                } else {
-                    null
-                }
-            } else {
-                null
+                (nextPos to nextDepth).takeIf { nextDepth >= 0 && it !in seen }
             }
 
             val nextStates = if (nextHop != null) {
-                listOf(SearchState(nextHop.first, nextHop.second, steps + 1))
+                listOf(SearchState(nextHop.first, steps + 1, nextHop.second))
             } else {
                 pos.cardinalNeighbors().filter {
                     maze[it.y][it.x] == '.' && (it to depth) !in seen
                 }.map {
-                    SearchState(it, depth, steps + 1)
+                    SearchState(it, steps + 1, depth)
                 }
             }
             queue.addAll(nextStates)
@@ -168,9 +161,8 @@ private object Day20 {
     }
 
     fun run() {
-
-        println(shortestPath())
-        println(shortestPathRecursive())
+        println(shortestPathPart1())
+        println(shortestPathPart2())
     }
 }
 
