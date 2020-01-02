@@ -55,3 +55,7 @@ fun <T> List<T>.swap(a: Int, b: Int): List<T> {
 fun <T> arrayDequeOf(vararg items: T) = ArrayDeque<T>(items.size).apply {
     addAll(items)
 }
+
+fun <T> List<T>.replace(index: Int, newValue: T): List<T> = toMutableList().apply {
+    set(index, newValue)
+}

@@ -43,8 +43,20 @@ operator fun List<String>.get(row: Int, col: Int) = get(row)[col]
 fun List<String>.getOrNull(row: Int, col: Int) = getOrNull(row)?.getOrNull(col)
 fun List<String>.getOrNull(point: Point) = getOrNull(point.y)?.getOrNull(point.x)
 
-inline fun <T> Iterable<Collection<T>>.findPoint(predicate: (T) -> Boolean): Point? = mapIndexed { y, row ->
+inline fun <T> Iterable<Collection<T>>.findFirstPoint(predicate: (T) -> Boolean): Point? = mapIndexed { y, row ->
     row.mapIndexed { x, item ->
         Point(x, y) to item
     }
-}.flatten().firstOrNull { predicate(it.second) }?.first
+}.flatten().firstOrNull {
+    predicate(it.second)
+}?.first
+
+inline fun <T> Iterable<Collection<T>>.findPoints(crossinline predicate: (T) -> Boolean): Sequence<Point> = asSequence().mapIndexed { y, row ->
+    row.mapIndexed { x, item ->
+        Point(x, y) to item
+    }
+}.flatten().filter {
+    predicate(it.second)
+}.map {
+    it.first
+}
