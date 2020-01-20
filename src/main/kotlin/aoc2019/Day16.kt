@@ -5,8 +5,9 @@ import java.io.File
 import kotlin.math.abs
 
 private val basePattern = sequenceOf(0, 1, 0, -1)
-
-private fun parseInput() = File("inputs/2019/16.txt").readText().trim().map { it - '0' }
+private val inputList = File("inputs/2019/16.txt").readText().trim().map { it - '0' }
+private const val REPEATED_LENGTH = 10000
+private val totalLength = inputList.size * REPEATED_LENGTH
 
 private fun getPatternCoefficients(outputIndex: Int) = basePattern
         .repeat()
@@ -14,23 +15,49 @@ private fun getPatternCoefficients(outputIndex: Int) = basePattern
             generateSequence { item }.take(outputIndex + 1)
         }.drop(1)
 
-private fun computePhase(input: List<Int>) = input.indices.map { index ->
-    val sum = getPatternCoefficients(index)
+private fun computePhase(input: List<Int>) = input.indices.asSequence().map { index ->
+    getPatternCoefficients(index)
             .zip(input.asSequence())
             .take(input.size).map {
                 it.first * it.second
-            }.sum()
-    abs(sum % 10)
+            }.sum().let {
+                abs(it) % 10
+            }
 }.toList()
 
-fun computeFirst8DigitsAfter100Phases(originalInput: List<Int>) {
-    var input = originalInput
-    repeat(100) { input = computePhase(input) }
-    val first8Digits = input.take(8).joinToString("")
-    println(first8Digits)
+private fun computeDigits(src: ByteArray, dst: ByteArray) {
+    var digitSum: Byte = 0
+    var index = dst.size - 1
+    while (index >= 0) {
+        digitSum = ((digitSum + src[index]) % 10).toByte()
+        dst[index] = digitSum
+        index--
+    }
+}
+
+fun computeFFT(phases: Int = 100) {
+    var input = inputList
+    repeat(phases) {
+        input = computePhase(input)
+    }
+    val digits = input.take(8).joinToString("")
+    println(digits)
+}
+
+fun computeBigOffsetFFT() {
+    val digitsToSkip = inputList.take(7).joinToString("").toInt()
+    val digits1 = ByteArray(totalLength - digitsToSkip) { (inputList[(digitsToSkip + it) % inputList.size]).toByte() }
+    val digits2 = ByteArray(digits1.size) { 0 }
+
+    repeat(50) {
+        computeDigits(digits1, digits2)
+        computeDigits(digits2, digits1)
+    }
+
+    println(digits1.take(8).joinToString(""))
 }
 
 fun main() {
-    val input = parseInput()
-    computeFirst8DigitsAfter100Phases(input)
+    computeFFT()
+    computeBigOffsetFFT()
 }
