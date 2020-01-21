@@ -35,7 +35,7 @@ private fun computeDigits(src: ByteArray, dst: ByteArray) {
     }
 }
 
-fun computeFFT(phases: Int = 100) {
+private fun computeFFT(phases: Int = 100) {
     var input = inputList
     repeat(phases) {
         input = computePhase(input)
@@ -44,7 +44,7 @@ fun computeFFT(phases: Int = 100) {
     println(digits)
 }
 
-fun computeBigOffsetFFT() {
+private fun computeBigOffsetFFT() {
     val digitsToSkip = inputList.take(7).joinToString("").toInt()
     val digits1 = ByteArray(totalLength - digitsToSkip) { (inputList[(digitsToSkip + it) % inputList.size]).toByte() }
     val digits2 = ByteArray(digits1.size) { 0 }
