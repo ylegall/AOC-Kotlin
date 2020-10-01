@@ -18,36 +18,28 @@ private object Day21 {
     }
 
     fun run() {
+
         val script1 = listOf(
-                "NOT C J",
+                "NOT B J",
+                "NOT C T",
+                "OR T J",
                 "AND D J",
                 "NOT A T",
-                "AND D T",
                 "OR T J"
         )
 
-//        val script2 = listOf(
-//                "OR C T",
-//                "OR E T",
-//                "OR F T",
-//                "NOT T T",
-//                "AND D T",
-//                "OR T J",
-//
-//                "NOT B T",
-//                "NOT T T",
-//                "OR C T",
-//                "OR E T",
-//                "NOT T T",
-//                "AND D T",
-//                "OR T J",
-//
-//                "NOT A T",
-//                "OR T J"
-//        )
+        val script2 = listOf(
+                "NOT B J",
+                "NOT C T",
+                "OR T J",
+                "AND D J",
+                "AND H J",
+                "NOT A T",
+                "OR T J"
+        )
 
         executeScript(script1 + "WALK\n")
-//        executeScript(script2 + "RUN\n")
+        executeScript(script2 + "RUN\n")
     }
 }
 
