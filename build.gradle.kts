@@ -1,11 +1,11 @@
-import org.gradle.api.internal.file.pattern.PatternMatcherFactory.compile
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "org.ygl"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.3.50"
+    kotlin("jvm") version "1.4.0"
     java
 }
 repositories {
