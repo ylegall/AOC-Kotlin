@@ -22,24 +22,22 @@ private object Day6 {
 
     fun countIntersect(lines: List<String>): Int {
         var totalCounts = 0
-        val groupCounts = mutableSetOf<Char>()
-        var add = true
-
+        var groupCounts = emptySet<Char>()
         for (line in lines) {
             if (line.isBlank()) {
-                add = true
                 totalCounts += groupCounts.size
-                groupCounts.clear()
-            } else if (add) {
-                groupCounts.addAll(line.toSet())
-                add = false
+                groupCounts = emptySet()
             } else {
-                groupCounts.retainAll(line.toSet())
+                groupCounts = if (groupCounts.isEmpty()) {
+                    line.toSet()
+                } else {
+                    groupCounts.intersect(line.toSet())
+                }
             }
         }
-        totalCounts += groupCounts.size
         return totalCounts
     }
+
 }
 
 fun main() {
