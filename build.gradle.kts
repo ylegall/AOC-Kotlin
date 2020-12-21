@@ -19,13 +19,9 @@ dependencies {
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 
-task<JavaExec>("solution1") {
-    main = "aoc2018.Solution1Kt"
+task<JavaExec>("runDay") {
+    val year = project.properties["year"]!!
+    val day = project.properties["day"]!!
+    main = "aoc$year.Day${day}Kt"
     classpath = sourceSets["main"].runtimeClasspath
-}
-
-task<JavaExec>("Day9") {
-    main = "aoc2015.Day9Kt"
-    classpath = sourceSets["main"].runtimeClasspath
-    standardInput = System.`in`
 }
