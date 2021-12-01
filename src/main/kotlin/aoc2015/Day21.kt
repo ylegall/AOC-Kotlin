@@ -75,13 +75,13 @@ object Day21
         val allLoadouts = allLoadouts()
         allLoadouts.filter {
             it.isWinningInventory()
-        }.minBy {
+        }.minByOrNull {
             it.cost()
         }?.cost()?.also { println(it) }
 
         allLoadouts.filterNot {
             it.isWinningInventory()
-        }.maxBy {
+        }.maxByOrNull {
             it.cost()
         }?.cost()?.also { println(it) }
     }

@@ -10,11 +10,11 @@ private fun columnCharCounts(lines: Sequence<String>) =
     }
 
 private fun mostFrequentCharsByColumn(lines: Sequence<String>) = columnCharCounts(lines).map { counts ->
-    counts.maxBy { it.value }?.key
+    counts.maxByOrNull { it.value }?.key
 }.joinToString("")
 
 private fun leastFrequentCharsByColumn(lines: Sequence<String>) = columnCharCounts(lines).map { counts ->
-    counts.minBy { it.value }?.key
+    counts.minByOrNull { it.value }?.key
 }.joinToString("")
 
 fun main() {

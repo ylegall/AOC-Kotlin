@@ -31,9 +31,9 @@ private fun Iterable<Int>.product() = fold(1L) { a, b -> a * b }
 private fun findSmallestGroupProduct(groups: Set<Set<Int>>): Long {
     return groups.groupBy {
         it.size
-    }.minBy {
+    }.minByOrNull {
         it.key
-    }?.value?.minBy {
+    }?.value?.minByOrNull {
         it.product()
     }?.product() ?: 0L
 }

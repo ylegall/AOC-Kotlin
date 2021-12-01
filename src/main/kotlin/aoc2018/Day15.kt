@@ -8,9 +8,9 @@ import java.util.HashMap
 
 private object Day15 {
 
-    private enum class Team(val symbol: Char) { Goblin('G'), Elf('E') }
+    enum class Team(val symbol: Char) { Goblin('G'), Elf('E') }
 
-    private data class Actor(
+    data class Actor(
             val team: Team,
             var pos: Point,
             var hp: Int = 200,
@@ -92,7 +92,7 @@ private object Day15 {
                     seen.add(path.last)
                 }
             }
-            return shortestPaths.groupBy { it.steps }.minBy { it.key }?.value
+            return shortestPaths.groupBy { it.steps }.minByOrNull { it.key }?.value
         }
 
         fun run(elfAttackPower: Int = 3, allowElfDeaths: Boolean = true): Team {

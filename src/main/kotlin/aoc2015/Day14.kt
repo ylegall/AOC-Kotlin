@@ -32,20 +32,20 @@ object Day14 {
         return (1..SECONDS).fold(mapOf<String, Int>()) { currentPoints, elapsed ->
             val currentLeaders = reindeers.groupBy {
                 it.distanceAfterSeconds(elapsed)
-            }.maxBy {
+            }.maxByOrNull {
                 it.key
             }!!.value.map {
                 it.name to (currentPoints.getOrDefault(it.name, 0) + 1)
             }.toMap()
             currentPoints + currentLeaders
-        }.maxBy { it.value }!!.value
+        }.maxByOrNull { it.value }!!.value
     }
 
     fun run() {
         val reindeers = File("inputs/2015/14.txt").useLines { lines ->
             lines.toList().map { it.toReindeer() }
         }
-        println(reindeers.map { it.distanceAfterSeconds(SECONDS) }.max())
+        println(reindeers.map { it.distanceAfterSeconds(SECONDS) }.maxOrNull())
         println(maxTimeSpentInTheLead(reindeers))
     }
 }

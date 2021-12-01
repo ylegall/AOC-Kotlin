@@ -69,8 +69,8 @@ private object Day7 {
         return when {
             weightCounts.size == 1 -> null
             weightCounts.size == 2 -> {
-                val correctWeight = weightCounts.maxBy { it.value }?.key!!
-                val wrongWeight = weightCounts.minBy { it.value }?.key!!
+                val correctWeight = weightCounts.maxByOrNull { it.value }?.key!!
+                val wrongWeight = weightCounts.minByOrNull { it.value }?.key!!
                 val wrongNode = nodes.find { it.second != correctWeight }!!.first
                 wrongNode to correctWeight - wrongWeight
             }

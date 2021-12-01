@@ -58,6 +58,6 @@ fun main() {
             }
         }.toList()
     }
-    println(generateCookies(ingredients).maxBy { it.score })
-    println(generateCookies(ingredients).filter { it.calories == 500 }.maxBy { it.score })
+    println(generateCookies(ingredients).maxByOrNull { it.score })
+    println(generateCookies(ingredients).filter { it.calories == 500 }.maxByOrNull { it.score })
 }

@@ -58,7 +58,7 @@ private object Day8 {
                 maxValueAtAnyTime = max(maxValueAtAnyTime, registers.getOrDefault(instruction.op.symbol, 0))
             }
         }
-        return registers.values.max()!! to maxValueAtAnyTime
+        return registers.values.maxOrNull()!! to maxValueAtAnyTime
     }
 
     fun run() {

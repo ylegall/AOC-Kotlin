@@ -43,9 +43,9 @@ private fun findMaxSleepMinute(lines: Stream<String>) {
             }
         }
     }
-    val sleepiest = guardSleepTimes.entries.maxBy { it.value }?.key!!
-    val sleepiestMinute = sleepMinutes.entries.filter { it.key.first == sleepiest }.maxBy { it.value }!!
-    val totalSeepiestMinute = sleepMinutes.entries.maxBy { it.value }!!
+    val sleepiest = guardSleepTimes.entries.maxByOrNull { it.value }?.key!!
+    val sleepiestMinute = sleepMinutes.entries.filter { it.key.first == sleepiest }.maxByOrNull { it.value }!!
+    val totalSeepiestMinute = sleepMinutes.entries.maxByOrNull { it.value }!!
     println("answer part a:" + (sleepiest * sleepiestMinute.key.second))
     println("answer part b:" + (totalSeepiestMinute.key.first * totalSeepiestMinute.key.second))
 }

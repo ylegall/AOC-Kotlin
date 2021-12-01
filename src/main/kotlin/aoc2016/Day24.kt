@@ -83,7 +83,7 @@ private object Day24 {
                     val end = targets[segment[1]]
                     pathLengths[start to end] ?: pathLengths[end to start]!!
                 }.sum()
-            }.min()!!
+            }.minOrNull()!!
         }
 
     }

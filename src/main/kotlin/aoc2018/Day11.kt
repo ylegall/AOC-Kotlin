@@ -67,6 +67,6 @@ private fun maxPowerSum(k: Int): Pair<Pair<Int, Int>, Pair<Int, Int>> {
 
 fun main() {
     println(maxPowerSum(3))
-    val maxSquare = (1..300).map { maxPowerSum(it) }.maxBy { it.second.second }
+    val maxSquare = (1..300).map { maxPowerSum(it) }.maxByOrNull { it.second.second }
     println(maxSquare)
 }

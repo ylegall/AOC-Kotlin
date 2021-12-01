@@ -26,10 +26,10 @@ private fun largestContainedRegion(points: Map<Int, Point>) {
     val areas = hashMapOf<Int, Int>()
     val edgePoints = hashSetOf<Int>()
 
-    val maxX = points.values.maxBy { it.x }?.x!!
-    val maxY = points.values.maxBy { it.y }?.y!!
-    val minX = points.values.minBy { it.x }?.x!!
-    val minY = points.values.minBy { it.y }?.y!!
+    val maxX = points.values.maxByOrNull { it.x }?.x!!
+    val maxY = points.values.maxByOrNull { it.y }?.y!!
+    val minX = points.values.minByOrNull { it.x }?.x!!
+    val minY = points.values.minByOrNull { it.y }?.y!!
 
     (minX .. maxX).forEach { col ->
         points.entries.minByOrNull { it.value.mDist(col, minY) }?.let { edgePoints.add(it.key) }
@@ -52,14 +52,14 @@ private fun largestContainedRegion(points: Map<Int, Point>) {
         }
     }
 
-    println("largest area: " + areas.maxBy { it.value }?.value)
+    println("largest area: " + areas.maxByOrNull { it.value }?.value)
 }
 
 private fun areaOfRegionWithin10000(points: Map<Int, Point>) {
-    val maxX = points.values.maxBy { it.x }?.x!!
-    val maxY = points.values.maxBy { it.y }?.y!!
-    val minX = points.values.minBy { it.x }?.x!!
-    val minY = points.values.minBy { it.y }?.y!!
+    val maxX = points.values.maxByOrNull { it.x }?.x!!
+    val maxY = points.values.maxByOrNull { it.y }?.y!!
+    val minX = points.values.minByOrNull { it.x }?.x!!
+    val minY = points.values.minByOrNull { it.y }?.y!!
 
     var area = 0
     for (row in minY .. maxY) {

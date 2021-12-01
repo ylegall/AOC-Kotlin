@@ -50,7 +50,7 @@ private object Day7 {
             }
             amps.last().output.peekLast()
 
-        }.max() ?: -1
+        }.maxOrNull() ?: -1
     }
 
     fun findLargestSignal(): Int {

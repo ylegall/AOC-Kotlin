@@ -7,11 +7,11 @@ import kotlin.math.abs
 
 private object Day23 {
 
-    private data class Point3(val x: Long, val y: Long, val z: Long) {
+    data class Point3(val x: Long, val y: Long, val z: Long) {
         fun distanceTo(other: Point3) = abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
     }
 
-    private data class Bot(val pos: Point3, val r: Long) {
+    data class Bot(val pos: Point3, val r: Long) {
         fun isPointInRange(point: Point3) = pos.distanceTo(point) <= r
     }
 
@@ -56,12 +56,12 @@ private object Day23 {
     }
 
     fun botsInRangeOfStrongest(bots: List<Bot>): Int {
-        val strongestBot = bots.maxBy { it.r }!!
+        val strongestBot = bots.maxByOrNull { it.r }!!
         return bots.filter { strongestBot.isPointInRange(it.pos) }.size
     }
 
     fun closestPointToAllBots(bots: List<Bot>) {
-        val maxDimension = bots.map { max(abs(it.pos.x), abs(it.pos.y), abs(it.pos.z))!! }.max()!!
+        val maxDimension = bots.map { max(abs(it.pos.x), abs(it.pos.y), abs(it.pos.z))!! }.maxOrNull()!!
         val initialSize = Integer.highestOneBit(maxDimension.toInt()) * 2L
         val origin = Point3(0, 0, 0)
         val initialBox = Box(Point3(-initialSize, -initialSize, -initialSize), initialSize * 2L)

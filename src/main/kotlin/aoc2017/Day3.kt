@@ -15,7 +15,7 @@ private fun stepsToCenter(n: Int): Int {
     val length = (ring * 2) + 1
     val corner = length * length
     val midPoints = (0 .. 3).map { corner - ring - (it * (length - 1)) }
-    val stepsToMiddle = midPoints.map { abs(n - it) }.min()!!
+    val stepsToMiddle = midPoints.map { abs(n - it) }.minOrNull()!!
     return ring + stepsToMiddle
 }
 

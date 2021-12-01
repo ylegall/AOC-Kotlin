@@ -43,7 +43,7 @@ private object Day20 {
         val particles = parseInput()
         return particles.mapIndexed { idx, particle ->
             idx to particle
-        }.minBy {
+        }.minByOrNull {
             it.second.acc.magnitude()
         }?.first ?: -1
     }

@@ -45,12 +45,12 @@ private object Day3 {
 
     fun findClosestIntersection(paths: List<Directions>) {
         val intersections = findIntersections(paths)
-        println(intersections.map { (point, _) -> point.mDist(0, 0) }.min())
+        println(intersections.map { (point, _) -> point.mDist(0, 0) }.minOrNull())
     }
 
     fun findfewestStepsToIntersection(paths: List<Directions>) {
         val intersections = findIntersections(paths)
-        println(intersections.minBy { it.second }?.second)
+        println(intersections.minByOrNull { it.second }?.second)
     }
 
 }

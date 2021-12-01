@@ -8,7 +8,7 @@ private const val LAYER_SIZE = WIDTH * HEIGHT
 
 private fun productOfOneAndTwoDigits(layerData: List<List<Int>>) {
     val layerDigitCounts = layerData.map { layer -> layer.groupingBy { it }.eachCount().withDefault { 0 } }
-    val product = layerDigitCounts.minBy { it.getValue(0) }?.let { it.getValue(1) * it.getValue(2) }
+    val product = layerDigitCounts.minByOrNull { it.getValue(0) }?.let { it.getValue(1) * it.getValue(2) }
     println(product)
 }
 

@@ -6,6 +6,8 @@ import kotlin.math.abs
 
 private object Day22 {
 
+    private const val DECK_SIZE = 119315717514079
+
     private sealed class Shuffle {
         data class Cut(val n: Int): Shuffle()
         object Deal: Shuffle()
@@ -55,38 +57,56 @@ private object Day22 {
         }
     }
 
-    private class BigDeck(
-            val size: Long,
-            var indexToTrack: Long
-    ) {
-        fun cutReverse(n: Int) {
-            indexToTrack = if (n < 0) {
-                val m = abs(n)
-                if (indexToTrack < m) {
-                    indexToTrack + size - m
-                } else {
-                    indexToTrack - m
-                }
-            } else {
-                if (indexToTrack >= size - n) {
-                    indexToTrack - size + n
-                } else {
-                    indexToTrack + n
-                }
-            }
-        }
+    //private class BigDeck(
+    //        val size: Long,
+    //        var indexToTrack: Long
+    //) {
+    //    fun cutReverse(n: Int) {
+    //        indexToTrack = if (n < 0) {
+    //            val m = abs(n)
+    //            if (indexToTrack < m) {
+    //                indexToTrack + size - m
+    //            } else {
+    //                indexToTrack - m
+    //            }
+    //        } else {
+    //            if (indexToTrack >= size - n) {
+    //                indexToTrack - size + n
+    //            } else {
+    //                indexToTrack + n
+    //            }
+    //        }
+    //    }
+    //
+    //    fun dealReverse() {
+    //        indexToTrack = size - 1 - indexToTrack
+    //    }
+    //
+    //    fun dealWithIndexReverse(n: Int) {
+    //        while (indexToTrack % n != 0L) {
+    //            indexToTrack += size
+    //        }
+    //        indexToTrack /= n
+    //    }
+    //}
 
-        fun dealReverse() {
-            indexToTrack = size - 1 - indexToTrack
-        }
-
-        fun dealWithIndexReverse(n: Int) {
-            while (indexToTrack % n != 0L) {
-                indexToTrack += size
-            }
-            indexToTrack /= n
-        }
+    // f(x) = a*x + b
+    class LinearFunction(val a: Long, val b: Long) {
+        operator fun invoke(x: Long) = (a * x + b) % DECK_SIZE
     }
+
+    fun compose(f: LinearFunction, g: LinearFunction) = LinearFunction((f.a * g.a) % DECK_SIZE, (g.a * f.b + g.b) % DECK_SIZE)
+
+    fun modInverse(a: Long, m: Long): Long {
+        val a = a % m
+        for (x in 1L until m) {
+            if ((a * x) % m == 1L) {
+                return x
+            }
+        }
+        return 1
+    }
+
 
     fun run() {
         val operations = parseInput()
@@ -103,41 +123,37 @@ private object Day22 {
         }
         println(smallDeck.cards.indices.find { smallDeck.cards[it] == 2019 })
 
-//        val bigDeck = BigDeck(10007, 2306)
-//        operations.reversed().forEachIndexed { i, op ->
-////            println("op = $op")
-//            when (op) {
-//                is Cut               -> bigDeck.cutReverse(op.n)
-//                is DealWithIncrement -> bigDeck.dealWithIndexReverse(op.n)
-//                Deal                 -> bigDeck.dealReverse()
-//            }
-////            println("\t$i: ${bigDeck.indexToTrack}")
-//        }
-//        println(bigDeck.indexToTrack)
+        val reversedOps = operations.reversed().asSequence()
+                .map {
+                    when (it) {
+                        is Cut               -> LinearFunction(1L, it.n % DECK_SIZE)
+                        is DealWithIncrement -> LinearFunction(modInverse(it.n.toLong(), DECK_SIZE) % DECK_SIZE, 0L)
+                        Deal                 -> LinearFunction(-1L, -1L - DECK_SIZE)
+                    }
+                }.reduce(this::compose)
 
-        val reversedOps = operations.reversed()
-        val bigDeck = BigDeck(119315717514079, 2020)
-        val seen = mutableSetOf(2020L)
-//        val bigDeck = BigDeck(119315717514047, 2020)
-        var cycles = 0
-        while (true) {
-            for (op in reversedOps) {
-                when (op) {
-                    is Cut               -> bigDeck.cutReverse(op.n)
-                    is DealWithIncrement -> bigDeck.dealWithIndexReverse(op.n)
-                    Deal                 -> bigDeck.dealReverse()
-                }
-            }
-            cycles++
-            println(bigDeck.indexToTrack)
-            if (cycles >= 10) break
-            if (bigDeck.indexToTrack in seen) {
-                println("found repeat ${bigDeck.indexToTrack} after $cycles cycles")
-                break
-            }
-            seen.add(bigDeck.indexToTrack)
-        }
 
+        //val reversedOps = operations.reversed()
+        //val bigDeck = BigDeck(119315717514079, 2020)
+        //val seen = mutableSetOf(2020L)
+        //var cycles = 0
+        //while (true) {
+        //    for (op in reversedOps) {
+        //        when (op) {
+        //            is Cut               -> bigDeck.cutReverse(op.n)
+        //            is DealWithIncrement -> bigDeck.dealWithIndexReverse(op.n)
+        //            Deal                 -> bigDeck.dealReverse()
+        //        }
+        //    }
+        //    cycles++
+        //    println(bigDeck.indexToTrack)
+        //    if (cycles >= 10) break
+        //    if (bigDeck.indexToTrack in seen) {
+        //        println("found repeat ${bigDeck.indexToTrack} after $cycles cycles")
+        //        break
+        //    }
+        //    seen.add(bigDeck.indexToTrack)
+        //}
         //println(bigDeck.indexToTrack)
     }
 }

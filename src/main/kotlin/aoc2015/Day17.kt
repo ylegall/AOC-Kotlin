@@ -38,5 +38,5 @@ private fun subsetSum2(
 
 fun main() {
     println(subsetSum())
-    println(subsetSum2().minBy { it.key }!!.value)
+    println(subsetSum2().minByOrNull { it.key }!!.value)
 }

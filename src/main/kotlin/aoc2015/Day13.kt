@@ -23,7 +23,7 @@ private fun maxHappiness(happinessMap: Map<Pair<String, String>, Int>): Int {
     }.map { seatList ->
         seatList.zipWithNext().map { happinessMap[it]!! }.sum() +
                 seatList.reversed().zipWithNext().map { happinessMap[it]!! }.sum()
-    }.max()!!
+    }.maxOrNull()!!
 }
 
 private fun <T> List<T>.dropAt(n: Int): List<T> = this.subList(0, n) + this.subList(n + 1, size)
@@ -37,8 +37,8 @@ private fun maxHappinessWithGap(happinessMap: Map<Pair<String, String>, Int>): I
         (0 until seatList.size - 1).map { gap ->
             seatList.zipWithNext().dropAt(gap).map{ happinessMap[it]!! }.sum() +
                     seatList.reversed().zipWithNext().dropAt(seatList.size - 2 - gap).map { happinessMap[it]!! }.sum()
-        }.max()!!
-    }.max()!!
+        }.maxOrNull()!!
+    }.maxOrNull()!!
 }
 
 fun main() {

@@ -7,7 +7,7 @@ private object Day2 {
 
     private val pattern = Regex("""(\d+)-(\d+) (\w): (\w+)""")
 
-    private data class PasswordPolicy(
+    data class PasswordPolicy(
             val low: Int,
             val high: Int,
             val char: Char,

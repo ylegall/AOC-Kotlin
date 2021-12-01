@@ -23,6 +23,8 @@ class Counter<T>(
     operator fun plusAssign(key: T) = increment(key)
 
     fun copy() = Counter(counts.toMutableMap())
+
+    override fun toString() = counts.toString()
 }
 
 fun <T> counterOf(counts: Map<T, Int>) = Counter(counts.mapValues { it.value.toLong() }.toMutableMap())

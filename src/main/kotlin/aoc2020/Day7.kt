@@ -8,12 +8,12 @@ private object Day7 {
     private val rulePattern = Regex("""(\d+) (\w+ \w+) bags?""")
     private const val SHINY_GOLD = "shiny gold"
 
-    private data class BagCount(
+    data class BagCount(
             val color: String,
             val count: Int
     )
 
-    private data class BagRule(
+    data class BagRule(
             val color: String,
             val contents: List<BagCount>
     )

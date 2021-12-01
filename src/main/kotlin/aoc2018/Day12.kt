@@ -8,8 +8,8 @@ private object Day12 {
             private var state: Set<Int>,
             private var transitions: Set<String>
     ) {
-        private var min: Int = state.min()!!
-        private var max: Int = state.max()!!
+        private var min: Int = state.minOrNull()!!
+        private var max: Int = state.maxOrNull()!!
         private var lastSum = 0
 
         private fun nextValueAtIndex(idx: Int): Boolean {

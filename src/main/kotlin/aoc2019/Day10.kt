@@ -29,7 +29,7 @@ private object Day10 {
             first to asteroids.minus(first).map { second ->
                 slopeBetween(first, second)
             }.distinct().size
-        }.maxBy { it.second }!!
+        }.maxByOrNull { it.second }!!
     }
 
     private fun angle(p1: Point, p2: Point): Double {

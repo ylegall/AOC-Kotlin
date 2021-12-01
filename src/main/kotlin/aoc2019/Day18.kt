@@ -18,19 +18,19 @@ private object Day18 {
     )
 
     data class KeySet(private val bits: Int = 0) {
-     
+
         private fun keyId(key: Char) = key - 'a'
-        
+
         val size; get() = Integer.bitCount(bits)
-        
+
         operator fun contains(key: Char) = (bits and (1 shl keyId(key))) != 0
 
         fun containsAll(otherKeys: KeySet) = (otherKeys.bits and bits) == otherKeys.bits
-        
+
         fun withKey(key: Char) = KeySet(bits or (1 shl keyId(key)))
     }
 
-    private class MapInfo(
+    class MapInfo(
             val map: List<String>,
             val keyLocations: Map<Char, Point>,
             val keyQuadrants: Map<Char, Int>,
@@ -134,7 +134,7 @@ private object Day18 {
                             keys.withKey(nextKey),
                             cache
                     )
-                }.min()!!.also { steps ->
+                }.minOrNull()!!.also { steps ->
                     cache[cacheKey] = steps - currentSteps
                 }
             }
@@ -167,7 +167,7 @@ private object Day18 {
                             keys.withKey(nextKey),
                             cache
                     )
-                }.min()!!.also { steps ->
+                }.minOrNull()!!.also { steps ->
                     cache[cacheKey] = steps - currentSteps
                 }
             }

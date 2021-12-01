@@ -100,7 +100,7 @@ object Day22 {
                     minManaRecursive(nextState, !wizardTurn)
                 }
 
-            }.filterIsInstance<GameResult.Win>().minBy {
+            }.filterIsInstance<GameResult.Win>().minByOrNull {
                 it.manaSpent
             } ?: GameResult.Loss
 

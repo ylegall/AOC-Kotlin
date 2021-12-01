@@ -18,7 +18,7 @@ private fun uniqueRounds(): Pair<Int, Int> {
 }
 
 private fun List<Int>.redistribute(): List<Int> {
-    val (idx, maxvalue) = mapIndexed { idx, value -> idx to value }.maxBy { it.second }!!
+    val (idx, maxvalue) = mapIndexed { idx, value -> idx to value }.maxByOrNull { it.second }!!
     val newBlocks = this.toMutableList()
     newBlocks[idx] = 0
     var i = idx + 1

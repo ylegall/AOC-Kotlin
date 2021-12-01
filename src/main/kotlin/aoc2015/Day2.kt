@@ -3,10 +3,10 @@ package aoc2015
 import java.io.File
 
 private fun totalWrappingPaper(lines: List<List<Int>>): Int {
-    return lines.map {
+    return lines.sumOf {
         val dimensions = listOf(it[0] * it[1], it[1] * it[2], it[0] * it[2])
-        dimensions.min()!! + 2 * dimensions.sum()
-    }.sum()
+        dimensions.minOrNull()!! + 2 * dimensions.sum()
+    }
 }
 
 private fun totalRibbon(lines: List<List<Int>>): Int {

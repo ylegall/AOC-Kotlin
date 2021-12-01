@@ -10,8 +10,10 @@ private object Day11_new {
     private const val DOWN = -1
     private const val GENS = 8
     private const val SIZE = 2 * GENS
+    private const val CHIP_POSITION = 1L shl GENS
+    private const val FLOOR_POSITION = 1L shl (SIZE + 1)
 
-    private class Floor(vararg items: Int): BitSet(32) {
+    class Floor(vararg items: Int): BitSet(32) {
         init {
             items.forEach { set(it) }
         }
@@ -42,7 +44,7 @@ private object Day11_new {
         }
     }
 
-    private data class FloorState(
+    data class FloorState(
             val pos: Int,
             val floors: List<Floor>
     ) {
@@ -90,41 +92,44 @@ private object Day11_new {
             return FloorState(pos + direction, newFloors)
         }
 
-//        private val idMap = HashMap<Int, Int>()
-//        private fun searialize(): String {
-//            var id = 1
-//            var bits = 0L
-//            idMap.clear()
-//            floors.forEachIndexed { floorIndex, floor ->
-//                var counter = 0
-//                for (gen in floor.generators()) {
-//
-//                }
-//            }
-//            for (floorIndex in floors.indices) {
-//                val floor = floors[floorIndex]
-//                var counter = 0
-//                for (gen in floor.generators()) {
-//
-//                }
-//            }
-//        }
+        private val idMap = HashMap<Int, Int>()
+        fun serialize(): Long {
+            var id = 1
+            var bits = 0L
+            idMap.clear()
+            floors.forEachIndexed { floorIndex, floor ->
+                var counter = 0
+                for (gen in floor.generators()) {
+                    idMap[gen] = counter++
+                    bits = bits or ((1L shl idMap[gen]!!) shl (floorIndex*16))
+                }
+            }
+            for (floorIndex in floors.indices) {
+                val floor = floors[floorIndex]
+                for (chip in floor.chips()) {
+                    val chipId = idMap[chip - GENS]!!
+                    bits = bits or ((CHIP_POSITION shl chipId) shl (floorIndex*16))
+                }
+            }
+            bits = bits or (FLOOR_POSITION shl (pos*16))
+            return bits
+        }
     }
 
     fun minSteps(start: FloorState): Int {
         var states = listOf(start)
-        val seen = HashSet<FloorState>()
+        val seen = HashSet<Long>()
         var steps = 0
         while (true) {
             if (states.any { it.isGoal() }) {
                 return steps
             }
-            seen.addAll(states)
+            seen.addAll(states.map { it.serialize() })
 
             val nextStates = states.flatMap {
                 it.nextStates()
             }.filter {
-                it !in seen
+                it.serialize() !in seen
             }.distinct()
 
             if (nextStates.isEmpty()) throw Exception("ran out of states")
@@ -138,7 +143,9 @@ private object Day11_new {
     fun run() {
         val start = FloorState(0,
                 listOf(
-                        Floor(0, 1, 9, 2, 3, 11, 4, 12),
+                        Floor(0, 1, 9, 2, 3, 11, 4, 12
+//                            , 5, 13, 6, 14
+                        ),
                         Floor(8, 10),
                         Floor(),
                         Floor()

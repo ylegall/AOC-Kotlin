@@ -24,6 +24,6 @@ fun main() {
                 line.replace(it.toString(), "", ignoreCase = true)
             }.map {
                 collapse(it).length
-            }.min()
+            }.minOrNull()
     println(minLength)
 }

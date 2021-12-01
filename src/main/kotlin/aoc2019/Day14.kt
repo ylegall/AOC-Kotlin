@@ -7,9 +7,9 @@ import java.util.ArrayDeque
 
 private object Day14 {
 
-    private class Reagent(val units: Long, val name: String)
+    class Reagent(val units: Long, val name: String)
 
-    private class Reaction(
+    class Reaction(
             val result: Reagent,
             val inputs: List<Reagent>
     )

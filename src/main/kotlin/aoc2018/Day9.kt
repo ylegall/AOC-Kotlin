@@ -81,7 +81,7 @@ private object Day9 {
 
             player = (player + 1) % PLAYERS
         }
-        return scores.values.max()!!
+        return scores.values.maxOrNull()!!
     }
 
     fun run() {

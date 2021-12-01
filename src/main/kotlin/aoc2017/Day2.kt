@@ -6,7 +6,7 @@ import kotlin.math.min
 
 // part 1
 private fun minMaxDiffSum(rows: List<List<Int>>): Int {
-    return rows.map { it.max()!! - it.min()!! }.sum()
+    return rows.map { it.maxOrNull()!! - it.minOrNull()!! }.sum()
 }
 
 // part 2

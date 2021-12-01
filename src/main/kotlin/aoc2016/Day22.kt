@@ -9,7 +9,7 @@ private object Day22 {
 
     private val nodeRegex = Regex("""/dev/grid/node-x(\d+)-y(\d+)\s+(\d+)T\s+(\d+)T""")
 
-    private data class Node(
+    data class Node(
             val x: Int,
             val y: Int,
             val size: Int,
@@ -45,9 +45,9 @@ private object Day22 {
 
     fun printGrid(nodes: List<Node>) {
         val nodeMap = nodes.associateBy { Point(it.x, it.y) }
-        val minSize = nodes.minBy { it.size }!!.size
-        val maxRows = nodes.maxBy { it.y }!!.y
-        val maxCols = nodes.maxBy { it.x }!!.x
+        val minSize = nodes.minByOrNull { it.size }!!.size
+        val maxRows = nodes.maxByOrNull { it.y }!!.y
+        val maxCols = nodes.maxByOrNull { it.x }!!.x
         println("cols: $maxCols, rows: $maxRows")
 
         for (y in 0 .. maxRows) {

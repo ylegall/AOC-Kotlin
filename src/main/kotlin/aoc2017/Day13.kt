@@ -10,7 +10,7 @@ private fun isScanned(pos: Int, scanners: Map<Int, Int>, delay: Int = 0): Boolea
 }
 
 private fun findTotalSeverity(scanners: Map<Int, Int>, delay: Int = 0 ): Int {
-    val limit = scanners.maxBy { it.key }!!.key
+    val limit = scanners.maxByOrNull { it.key }!!.key
     return (0 .. limit).filter {
         isScanned(it, scanners, delay)
     }.map {

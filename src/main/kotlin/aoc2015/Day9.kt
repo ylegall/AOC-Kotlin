@@ -21,6 +21,6 @@ fun main() {
     }
     val cities = distances.keys.map { it.first }.distinct()
     val tourLengths = tourLengths(distances, cities)
-    println(tourLengths.min())
-    println(tourLengths.max())
+    println(tourLengths.minOrNull())
+    println(tourLengths.maxOrNull())
 }

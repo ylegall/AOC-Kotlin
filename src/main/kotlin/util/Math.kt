@@ -1,8 +1,8 @@
 package util
 
-fun <T: Comparable<T>> max(vararg items: T) = items.max()
+fun <T: Comparable<T>> max(vararg items: T) = items.maxOrNull()
 
-fun <T: Comparable<T>> min(vararg items: T) = items.min()
+fun <T: Comparable<T>> min(vararg items: T) = items.minOrNull()
 
 fun gcd(x: Int, y: Int) = gcd(x.toLong(), y.toLong()).toInt()
 

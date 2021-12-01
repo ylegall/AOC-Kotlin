@@ -12,7 +12,7 @@ private object Day24 {
         }
     }
 
-    private class Bridge(
+    class Bridge(
             val used: Set<Pair<Int, Int>> = emptySet(),
             val last: Int = 0
     ) {
@@ -38,7 +38,7 @@ private object Day24 {
         } else {
             nextPieces.map {
                 bestBridgeRecursive(bridge.addPiece(it), pieces - it, bridgeComparator)
-            }.maxWith(bridgeComparator) ?: bridge
+            }.maxWithOrNull(bridgeComparator) ?: bridge
         }
     }
 

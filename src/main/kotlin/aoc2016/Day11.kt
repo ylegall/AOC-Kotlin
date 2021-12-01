@@ -4,6 +4,8 @@ import aoc2016.Day11.FloorState
 import aoc2016.Day11.Moveable.Chip
 import aoc2016.Day11.Moveable.Gen
 import aoc2016.Day11.minSteps
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 private object Day11 {
 
@@ -85,14 +87,20 @@ private object Day11 {
 }
 
 
+@ExperimentalTime
 fun main() {
     val initialState = FloorState(0,
             listOf(
-                    setOf(Gen(1), Gen(2), Chip(2), Gen(3), Gen(4), Chip(4), Gen(5), Chip(5)),
+                    setOf(Gen(1), Gen(2), Chip(2), Gen(3), Gen(4), Chip(4), Gen(5), Chip(5)
+                        , Gen(6), Chip(6), Gen(7), Chip(7)
+                    ),
                     setOf(Chip(1), Chip(3)),
                     setOf(),
                     setOf()
             )
     )
-    println(minSteps(setOf(initialState)))
+    val timedResult = measureTimedValue {
+        minSteps(setOf(initialState))
+    }
+    println(timedResult)
 }
