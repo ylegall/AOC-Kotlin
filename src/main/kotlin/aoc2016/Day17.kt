@@ -1,8 +1,8 @@
 package aoc2016
 
+import util.toHexString
 import java.security.MessageDigest
 import java.util.*
-import javax.xml.bind.DatatypeConverter
 
 
 private object Day17 {
@@ -38,7 +38,6 @@ private object Day17 {
         return md.digest().toHexString()
     }
 
-    private fun ByteArray.toHexString() = DatatypeConverter.printHexBinary(this).toLowerCase()
 
     fun run(): String {
         var longestPath = Pos(0, 0)

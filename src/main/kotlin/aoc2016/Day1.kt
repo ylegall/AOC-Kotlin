@@ -28,7 +28,7 @@ private object Day1 {
                     newPosition,
                     newDirection,
                     visited + newVisited,
-                    endPoint ?: newVisited.asSequence().find(visited::contains)
+                    endPoint ?: newVisited.find(visited::contains)
             )
         }
     }

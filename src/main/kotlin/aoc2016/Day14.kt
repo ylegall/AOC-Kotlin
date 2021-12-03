@@ -1,7 +1,7 @@
 package aoc2016
 
+import util.toHexString
 import java.security.MessageDigest
-import javax.xml.bind.DatatypeConverter
 
 
 object Day14 {
@@ -38,8 +38,6 @@ object Day14 {
         val hash = md.digest()
         return hash.toHexString()
     }
-
-    private fun ByteArray.toHexString() = DatatypeConverter.printHexBinary(this).toLowerCase()
 
     private fun findMatchingTriple(match: MatchResult, index: Int): Set<Hash> {
         val listOfTripples = getTripleFromMatch(match)
