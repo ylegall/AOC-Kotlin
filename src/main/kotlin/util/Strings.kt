@@ -13,3 +13,5 @@ fun ByteArray.toHexString(): String {
     }
     return String(hexChars)
 }
+
+fun String.sorted() = this.toCharArray().sorted().joinToString("")
