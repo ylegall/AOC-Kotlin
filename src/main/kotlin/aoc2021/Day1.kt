@@ -13,7 +13,7 @@ fun main() {
         return windowSums.windowed(2).count { it[1] > it[0] }
     }
 
-    val depths = File("inputs/2021/1.txt").useLines { lines -> lines.map { it.toInt() }.toList() }
+    val depths = File("inputs/2021/input.txt").useLines { lines -> lines.map { it.toInt() }.toList() }
     println(part1(depths))
     println(part2(depths))
 }
