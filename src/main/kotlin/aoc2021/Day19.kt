@@ -1,7 +1,7 @@
 package aoc2021
 
 import java.io.File
-import kotlin.math.max
+import kotlin.math.abs
 
 fun main() {
 
@@ -23,6 +23,10 @@ fun main() {
             else -> throw Exception("bad axis")
         }
 
+    }
+
+    fun manhattanDistance(v1: Vec, v2: Vec): Int {
+        return abs(v1.x - v2.x) + abs(v1.y - v2.y) + abs(v1.z - v2.z)
     }
 
     fun List<Vec>.rotate(axis: Vec) = map { it.rotate(axis) }
@@ -73,11 +77,12 @@ fun main() {
         return emptyList()
     }
 
-    fun part1(input: List<List<Vec>>): Int {
+    fun part1(input: List<List<Vec>>) {
 
         val reference = input[0]
         val scannerSet = mutableSetOf(0)
         val allBeacons = reference.toMutableSet()
+        val scannerPositions = MutableList(input.size) { Vec(0, 0, 0) }
 
         var i = 1
         while (scannerSet.size < input.size) {
@@ -86,6 +91,8 @@ fun main() {
                     val matches = findOverlappingBeacons(allBeacons, orientation)
                     if (matches.isNotEmpty()) {
                         scannerSet.add(i)
+                        val scannerPosition = orientation.first().let { Vec(-it.x, -it.y, -it.z) } + matches.first()
+                        scannerPositions[i] = scannerPosition
                         allBeacons.addAll(matches)
                         break
                     }
@@ -93,8 +100,14 @@ fun main() {
             }
             i = (i + 1) % input.size
         }
-        //println(allBeacons.sortedWith(compareBy({ it.x }, { it.y }, { it.z })).joinToString("\n"))
-        return allBeacons.size
+        println("num beacons: ${allBeacons.size}")
+
+        val maxScannerDist = (0 until scannerPositions.size - 1).flatMap { i ->
+            (i + 1 until scannerPositions.size).map { j ->
+                manhattanDistance(scannerPositions[i], scannerPositions[j])
+            }
+        }.maxOrNull()
+        println("max scanner dist: $maxScannerDist")
     }
 
     val reports = File("inputs/2021/input.txt").useLines { lines ->
@@ -119,10 +132,5 @@ fun main() {
         reports
     }
 
-    println(part1(reports))
-//    println(part2())
-
-//    println(
-//        orientations(listOf(Vec(1, 0, 0), Vec(0, 0, 1))).joinToString("\n")
-//    )
+    part1(reports)
 }
