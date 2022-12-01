@@ -25,6 +25,23 @@ inline fun <T> Collection<T>.sumByLong(selector: (T) -> Long): Long {
     return sum
 }
 
+inline fun <T> Collection<T>.split(delimiter: (T) -> Boolean): List<List<T>> {
+    val chunks = mutableListOf<List<T>>()
+    val currentChunk = mutableListOf<T>()
+    for (item in this) {
+       if (delimiter(item)) {
+           chunks.add(currentChunk.toList())
+           currentChunk.clear()
+       } else {
+           currentChunk.add(item)
+       }
+    }
+    if (currentChunk.isNotEmpty()) {
+        chunks.add(currentChunk.toList())
+    }
+    return chunks
+}
+
 inline fun <reified T : Enum<T>> enumSetOf(vararg items: T): EnumSet<T> =
     EnumSet.noneOf(T::class.java).apply {
     addAll(items)
