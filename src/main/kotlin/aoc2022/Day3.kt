@@ -13,9 +13,9 @@ fun main() {
     fun part1() {
         val result = File("input.txt").useLines { lines ->
             lines.map { line ->
-                val items1 = line.substring(0, line.length/2).toSet()
-                val items2 = line.substring(line.length/2).toSet()
-                val commonItem = items1.intersect(items2).firstOrNull()!!
+                val firstHalf = line.substring(0 until line.length/2).toSet()
+                val secondHalf = line.substring(line.length/2).toSet()
+                val commonItem = firstHalf.intersect(secondHalf).firstOrNull()!!
                 commonItem.priority()
             }.sum()
         }
