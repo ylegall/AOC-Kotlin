@@ -4,7 +4,7 @@ import java.io.File
 
 fun main() {
 
-    fun IntRange.fullyContains(other: IntRange) = first <= other.first && last >= other.last
+    operator fun IntRange.contains(other: IntRange) = first <= other.first && last >= other.last
 
     fun IntRange.overlaps(other: IntRange) = first in other || other.first in this
 
@@ -17,7 +17,7 @@ fun main() {
 
     fun part1() {
         val fullyContainedPairs = input.count { (range1, range2) ->
-            range1.fullyContains(range2) or range2.fullyContains(range1)
+            range2 in range1 || range1 in range2
         }
         println(fullyContainedPairs)
     }
