@@ -13,7 +13,7 @@ private fun Char.hexValue() = Integer.parseInt(toString(), 16)
 
 private fun generateHashes(): List<String> {
     return (0 until 128).map { row ->
-        val key = "$INPUT-$row".map { it.toInt() }
+        val key = "$INPUT-$row".map { it.code }
         knotHashToString(key)
     }
 }

@@ -6,7 +6,6 @@ fun main() {
 
     fun part1(input: List<Int>, days: Int): Int {
         val fish = input.toMutableList()
-        var i = 0
         repeat(days) {
             var newCount = 0
             for (i in fish.indices) {

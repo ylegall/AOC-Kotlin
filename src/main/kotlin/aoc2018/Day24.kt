@@ -47,7 +47,6 @@ object Day24 {
 
         fun attack(target: Army) {
             val killedUnits = (damageToTarget(target) / target.hitPoints).coerceAtMost(target.units)
-//            if (killedUnits > 0) println("$allegiance group $id attacks defending group ${target.id}, killing $killedUnits units")
             target.units = (target.units - killedUnits).coerceAtLeast(0)
         }
 
@@ -73,12 +72,12 @@ object Day24 {
 
         fun run(): Allegiance {
             while (true) {
-                val sizeBefore = armies.sumBy { it.units }
+                val sizeBefore = armies.sumOf { it.units }
                 step()
                 if (isDefeated(IMMUNE) || isDefeated(INFECTION)) {
                     break
                 }
-                if (sizeBefore == armies.sumBy { it.units }) {
+                if (sizeBefore == armies.sumOf { it.units }) {
                     return INFECTION
                 }
             }
@@ -91,12 +90,11 @@ object Day24 {
         private fun step() {
             val chosenUnits = HashSet<Army>()
             val aliveUnits = armies.filter { it.units > 0 }
-            val targetMapping = aliveUnits.sortedWith(targetSelectionComparator).map { army ->
+            val targetMapping = aliveUnits.sortedWith(targetSelectionComparator).associateWith { army ->
                 val target = army.targetPreference(aliveUnits, chosenUnits)?.also { chosenUnits.add(it) }
-                army to target
-            }.toMap()
+                target
+            }
 
-//            println()
             targetMapping.entries.sortedWith(attackOrderComparator).forEach { (attacker, defender) ->
                 if (attacker.units > 0 && defender != null) {
                     attacker.attack(defender)
@@ -104,7 +102,7 @@ object Day24 {
             }
         }
 
-        private fun totalUnits(allegiance: Allegiance) = armies.filter { it.allegiance == allegiance }.sumBy { it.units }
+        private fun totalUnits(allegiance: Allegiance) = armies.filter { it.allegiance == allegiance }.sumOf { it.units }
 //        private fun totalUnits() = armies.filter { it.units > 0}
 
         private fun isDefeated(allegiance: Allegiance) = armies.filter {

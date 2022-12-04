@@ -10,8 +10,8 @@ private object Day21 {
     private fun executeScript(script: List<String>) {
         val inputQueue = ArrayDeque(script.joinToString("\n").toList())
         val processor = intCodeProcessor(codes) {
-            inputSupplier = { inputQueue.poll().toLong() }
-            outputConsumer = { print(if (it < 256) it.toChar() else it) }
+            inputSupplier = { inputQueue.poll().code.toLong() }
+            outputConsumer = { print(if (it < 256) Char(it.toInt()) else it) }
         }
         processor.run()
         println()

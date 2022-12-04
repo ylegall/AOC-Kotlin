@@ -17,7 +17,7 @@ private object Day17 {
                     imageData.add(scanline.toString())
                     scanline.clear()
                 } else {
-                    scanline.append(it.toChar())
+                    scanline.append(it.toInt().toChar())
                 }
             }
         }
@@ -145,15 +145,15 @@ private object Day17 {
         println(partition)
         val moveQueue = ArrayDeque<Int>()
         with (moveQueue) {
-            addAll(partition.mainRoutine.map { it.toInt() })
+            addAll(partition.mainRoutine.map { it.code })
             add(10)
-            addAll(partition.routineMappings.entries.find { it.value == "A" }!!.key.map { it.toInt() })
+            addAll(partition.routineMappings.entries.find { it.value == "A" }!!.key.map { it.code })
             add(10)
-            addAll(partition.routineMappings.entries.find { it.value == "B" }!!.key.map { it.toInt() })
+            addAll(partition.routineMappings.entries.find { it.value == "B" }!!.key.map { it.code })
             add(10)
-            addAll(partition.routineMappings.entries.find { it.value == "C" }!!.key.map { it.toInt() })
+            addAll(partition.routineMappings.entries.find { it.value == "C" }!!.key.map { it.code })
             add(10)
-            add('n'.toInt())
+            add('n'.code)
             add(10)
         }
 

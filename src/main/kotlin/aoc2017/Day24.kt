@@ -16,7 +16,7 @@ private object Day24 {
             val used: Set<Pair<Int, Int>> = emptySet(),
             val last: Int = 0
     ) {
-        fun strength() = used.sumBy { it.first + it.second }
+        fun strength() = used.sumOf { it.first + it.second }
 
         fun addPiece(piece: Pair<Int, Int>): Bridge {
             check(last == piece.first || last == piece.second)

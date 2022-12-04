@@ -9,7 +9,7 @@ private fun singleKnotHashIteration(input: List<Int>) {
 }
 
 private fun fullKnotHash(input: String) {
-    val lengths = input.map { it.toInt() }
+    val lengths = input.map { it.code }
     val result = knotHashToString(lengths)
     println(result)
 }
