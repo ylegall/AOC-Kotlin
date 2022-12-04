@@ -6,6 +6,7 @@ version = "1.0-SNAPSHOT"
 
 plugins {
     kotlin("jvm") version "1.7.21"
+//    kotlin("jvm") version "1.6.10"
     java
 }
 
@@ -21,16 +22,10 @@ dependencies {
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "1.8"
 
-//task<JavaExec>("runDay") {
-//    val year = project.properties["year"] ?: "0"
-//    val day = project.properties["day"] ?: "0"
-//    main = "aoc$year.Day${day}Kt"
-//    classpath = sourceSets["main"].runtimeClasspath
-//}
-
+// can run a file like: ./gradlew runDay -Pyear=2022 -Pday=4
 task("runDay", JavaExec::class) {
     val year = project.properties["year"] ?: "0"
     val day = project.properties["day"] ?: "0"
-    main = "aoc$year.Day${day}Kt"
+    mainClass.set("aoc$year.Day${day}Kt")
     classpath = sourceSets["main"].runtimeClasspath
 }
