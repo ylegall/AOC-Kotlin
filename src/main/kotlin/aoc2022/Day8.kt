@@ -4,17 +4,16 @@ import java.io.File
 import kotlin.math.max
 
 
-typealias Coord = Pair<Int, Int>
-
 fun main() {
 
     data class Tree(
-        val coord: Coord,
+        val row: Int,
+        val col: Int,
         val height: Int
     )
 
     val input = File("input.txt").readLines().mapIndexed { row, line ->
-        line.mapIndexed { col, h -> Tree(row to col, h.digitToInt()) }
+        line.mapIndexed { col, h -> Tree(row, col, h.digitToInt()) }
     }
 
     fun List<List<Tree>>.getCol(col: Int) = this.indices.map { row -> this[row][col] }
