@@ -24,6 +24,8 @@ fun lcm(vararg items: Long) = items.reduce { a, b -> lcm(a, b) }
 
 fun lcm(vararg items: Int) = items.reduce { a, b -> lcm(a, b) }
 
+fun sign(x: Int) = if (x < 0) -1 else 1
+
 infix fun Int.ceilDiv(divisor: Int): Int = -Math.floorDiv(-this, divisor)
 
 infix fun Long.ceilDiv(divisor: Long): Long = -Math.floorDiv(-this, divisor)
