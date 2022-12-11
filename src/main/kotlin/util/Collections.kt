@@ -76,3 +76,19 @@ fun <T> arrayDequeOf(vararg items: T) = ArrayDeque<T>(items.size).apply {
 fun <T> List<T>.replace(index: Int, newValue: T): List<T> = toMutableList().apply {
     set(index, newValue)
 }
+
+fun Iterable<Long>.product(initialValue: Long = 1L): Long {
+    var sum = initialValue
+    for (element in this) {
+        sum *= element
+    }
+    return sum
+}
+
+fun Iterable<Int>.product(initialValue: Int = 1): Int {
+    var sum = initialValue
+    for (element in this) {
+        sum *= element
+    }
+    return sum
+}
