@@ -1,6 +1,7 @@
 package util
 
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 data class Point(
         val x: Int,
@@ -18,6 +19,12 @@ data class Point(
     fun mDist(x: Int, y: Int) = abs(this.x - x) + abs(this.y - y)
 
     fun mDist(point: Point) = mDist(point.x, point.y)
+
+    fun dist(point: Point): Double {
+        val dx = (x - point.x)
+        val dy = (y - point.y)
+        return sqrt((dx * dx + dy * dy).toDouble())
+    }
 
     fun cardinalNeighbors() = listOf(
             Point(x - 1, y),
@@ -43,14 +50,11 @@ operator fun List<String>.get(row: Int, col: Int) = get(row)[col]
 fun List<String>.getOrNull(row: Int, col: Int) = getOrNull(row)?.getOrNull(col)
 fun List<String>.getOrNull(point: Point) = getOrNull(point.y)?.getOrNull(point.x)
 
-// inline fun <T> Iterable<Iterable<T>>.findFirstPoint(predicate: (T) -> Boolean): Point? = flatMapIndexed { y, row ->
-inline fun List<String>.findFirstPoint(predicate: (Char) -> Boolean): Point? = flatMapIndexed { y, row ->
-    row.mapIndexed { x, item ->
-        Point(x, y) to item
-    }
-}.firstOrNull {
-    predicate(it.second)
-}?.first
+fun Iterable<String>.findFirstPoint(char: Char): Point? {
+    return this.asSequence()
+        .flatMapIndexed { row, line -> line.mapIndexed { col, c -> Point(row, col) to c } }
+        .find { it.second == char }?.first
+}
 
 inline fun <T> Iterable<Collection<T>>.findPoints(crossinline predicate: (T) -> Boolean): Sequence<Point> = asSequence().mapIndexed { y, row ->
     row.mapIndexed { x, item ->
