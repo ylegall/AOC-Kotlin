@@ -31,10 +31,10 @@ fun main() {
         for (row in 0 until rockBottom) {
             for (col in minX..maxX) {
                 val c = when (Point(col, row)) {
-                    in rocks -> '#'
-                    in sand -> 'o'
+                    in rocks   -> '#'
+                    in sand    -> 'o'
                     sandSource -> '+'
-                    else -> '.'
+                    else       -> '.'
                 }
                 print(c)
             }
