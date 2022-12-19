@@ -60,8 +60,8 @@ fun main() {
     }
 
     fun part1() {
-        val start = input.findFirstPoint('S')!!
-        val goal = input.findFirstPoint('E')!!
+        val start = input.findFirstPoint { it == 'S' }!!
+        val goal = input.findFirstPoint { it == 'E' }!!
         val minSteps = search(
             start,
             goalCondition = { it == goal },
@@ -71,7 +71,7 @@ fun main() {
     }
 
     fun part2() {
-        val start = input.findFirstPoint('E')!!
+        val start = input.findFirstPoint { it == 'E' }!!
         val minSteps = search(
             start,
             goalCondition = { input[it.x][it.y] == 'a' },
