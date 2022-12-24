@@ -1,6 +1,6 @@
 package aoc2021
 
-import util.Counter
+import util.MutableCounter
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.max
@@ -23,7 +23,7 @@ fun main() {
     }
 
     fun part1(segments: List<Segment>): Int {
-        val counts = Counter<Pair<Int, Int>>()
+        val counts = MutableCounter<Pair<Int, Int>>()
         for (segment in segments) {
             if (segment.x1 == segment.x2 || segment.y1 == segment.y2) {
                 segment.toRange().forEach { point ->
@@ -35,7 +35,7 @@ fun main() {
     }
 
     fun part2(segments: List<Segment>): Int {
-        val counts = Counter<Pair<Int, Int>>()
+        val counts = MutableCounter<Pair<Int, Int>>()
         for (segment in segments) {
             val range = segment.toRange()
             range.forEach { point ->

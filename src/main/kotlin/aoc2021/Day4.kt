@@ -1,6 +1,6 @@
 package aoc2021
 
-import util.Counter
+import util.MutableCounter
 import java.io.File
 import java.util.*
 
@@ -9,8 +9,8 @@ private fun winningBoard(
     chosenNumbers: Set<Int>
 ): Int? {
     var unmarkedSum = 0
-    val columnCounts = Counter<Int>()
-    val rowCounts = Counter<Int>()
+    val columnCounts = MutableCounter<Int>()
+    val rowCounts = MutableCounter<Int>()
     for (row in board.indices) {
         var rowCount = 0
         for (col in board[row].indices) {

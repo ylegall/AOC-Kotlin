@@ -1,6 +1,6 @@
 package aoc2021
 
-import util.Counter
+import util.MutableCounter
 import java.io.File
 
 fun main() {
@@ -29,8 +29,8 @@ fun main() {
     }
 
     fun part2(start: String, rules: Map<String, String>): Long {
-        val pairCounts = Counter<String>()
-        val letterCounts = Counter<Char>()
+        val pairCounts = MutableCounter<String>()
+        val letterCounts = MutableCounter<Char>()
         start.forEach { letterCounts.increment(it) }
         start.windowed(2).forEach { pairCounts.increment(it) }
 

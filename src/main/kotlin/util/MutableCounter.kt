@@ -1,7 +1,7 @@
 package util
 
 
-class Counter<T>(
+class MutableCounter<T>(
         private val counts: MutableMap<T, Long> = mutableMapOf()
 ): MutableMap<T, Long> by counts {
 
@@ -22,11 +22,13 @@ class Counter<T>(
 
     operator fun plusAssign(key: T) = increment(key)
 
-    fun copy() = Counter(counts.toMutableMap())
+    fun copy() = MutableCounter(counts.toMutableMap())
 
     override fun toString() = counts.toString()
 }
 
-fun <T> counterOf(counts: Map<T, Int>) = Counter(counts.mapValues { it.value.toLong() }.toMutableMap())
+fun <T> mutableCounterOf(counts: Map<T, Int>) = MutableCounter(
+    counts.mapValues { it.value.toLong() }.toMutableMap()
+)
 
-fun <T> counts(items: Iterable<T>) = counterOf(items.groupingBy { it }.eachCount())
+fun <T> counts(items: Iterable<T>) = mutableCounterOf(items.groupingBy { it }.eachCount())

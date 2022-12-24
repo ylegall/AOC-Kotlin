@@ -1,6 +1,6 @@
 package aoc2021
 
-import util.Counter
+import util.MutableCounter
 import util.arrayDequeOf
 import java.io.File
 
@@ -8,7 +8,7 @@ fun main() {
 
     class State(
         val current: String = "start",
-        val counts: Counter<String> = Counter()
+        val counts: MutableCounter<String> = MutableCounter()
     )
 
     fun String.isSmall() = this.all { it.isLowerCase() }

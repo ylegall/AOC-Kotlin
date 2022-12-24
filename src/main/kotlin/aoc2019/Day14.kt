@@ -1,6 +1,6 @@
 package aoc2019
 
-import util.Counter
+import util.MutableCounter
 import util.ceilDiv
 import java.io.File
 import java.util.ArrayDeque
@@ -32,7 +32,7 @@ private object Day14 {
             reactions: Map<String, Reaction>
     ): Long {
         var requiredOre = 0L
-        val excess = Counter<String>()
+        val excess = MutableCounter<String>()
         val q = ArrayDeque<Pair<String, Long>>()
         q.add(startMaterial to startAmount)
         while (q.isNotEmpty()) {
