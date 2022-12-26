@@ -47,6 +47,10 @@ inline fun <reified T : Enum<T>> enumSetOf(vararg items: T): EnumSet<T> =
     addAll(items)
 }
 
+fun <A, B> Pair<A, B>.swap(): Pair<B, A> {
+    return second to first
+}
+
 fun <T> MutableList<T>.swap(a: Int, b: Int) {
     val temp = this[a]
     this[a] = this[b]

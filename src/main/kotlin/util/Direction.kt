@@ -16,6 +16,10 @@ enum class Direction {
     fun turnRight() = values().let { it[(ordinal + 1) % it.size] }
 
     fun turnLeft() = values().let { it[(it.size + ordinal - 1) % it.size] }
+
+    fun isHorizontal() = this == EAST || this == WEST
+
+    fun isVertical() = !isHorizontal()
 }
 
 fun Point.move(direction: Direction) = when(direction) {
