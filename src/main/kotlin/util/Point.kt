@@ -32,6 +32,13 @@ data class Point(
             Point(x + 1, y),
             Point(x, y - 1)
     )
+
+    fun mooreNeighbors() = cardinalNeighbors() + listOf(
+        Point(x - 1, y - 1),
+        Point(x + 1, y - 1),
+        Point(x - 1, y + 1),
+        Point(x + 1, y + 1),
+    )
 }
 
 val pointComparator = compareBy<Point>({ it.y }, { it.x })
