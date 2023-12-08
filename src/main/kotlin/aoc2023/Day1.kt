@@ -6,30 +6,34 @@ fun main() {
 
     val digitWords = listOf("one","two","three","four","five","six","seven","eight","nine")
 
-    val regex = digitWords.let { """(?=(\d|""" + it.joinToString("|") + "))" }
-        .also { println("regex: $it") }
-        .toRegex()
-
-    val digitMap = digitWords.mapIndexed { idx, digit -> digit to (idx+1) }.toMap()
-
     fun part1() {
-        val sum = File("input.txt").readLines().sumOf { line ->
-            val digits = line.filter { it.isDigit() }
-            val first = digits.first().digitToInt()
-            val last = digits.last().digitToInt()
-            first * 10 + last
+        val sum = File("input.txt").useLines { lines ->
+            lines.sumOf { line ->
+                val digits = line.asSequence().filter { it.isDigit() }.map { it.digitToInt() }
+                val first = digits.first()
+                val last = digits.last()
+                first * 10 + last
+            }
         }
         println(sum)
     }
 
-    fun String.toDigit() = digitMap[this] ?: this[0].digitToInt()
-
     fun part2() {
-        val sum = File("input.txt").readLines().sumOf { line ->
-            val tokens = regex.findAll(line).map { it.groups[1]!!.value }.toList()
-            val first = tokens.first().toDigit()
-            val last = tokens.last().toDigit()
-            first * 10L + last
+        val sum = File("input.txt").useLines { lines ->
+            lines.sumOf { line ->
+                val digits = line.indices.mapNotNull { startIndex ->
+                    val suffix = line.substring(startIndex)
+                    when {
+                        suffix[0].isDigit() -> suffix[0].digitToInt()
+                        else -> {
+                            digitWords.mapIndexed { index, word -> word to index }
+                                .firstOrNull { (word, _) -> suffix.startsWith(word) }
+                                ?.let { (_, index) -> index+1 }
+                        }
+                    }
+                }
+                digits.first() * 10 + digits.last()
+            }
         }
         println(sum)
     }
