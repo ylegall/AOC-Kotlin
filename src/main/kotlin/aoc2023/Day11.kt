@@ -11,8 +11,8 @@ fun main() {
     val galaxies = input.findPoints { it == '#' }.toList()
 
     fun totalDistances(delta: Long): Long {
-        val galaxyRows = galaxies.groupBy { it.y }
-        val galaxyCols = galaxies.groupBy { it.x }
+        val galaxyRows = galaxies.mapTo(mutableSetOf()) { it.y }
+        val galaxyCols = galaxies.mapTo(mutableSetOf()) { it.x }
         val emptyRows = input.indices.filter { it !in galaxyRows }
         val emptyCols = input[0].indices.filter { it !in galaxyCols }
         val cumulativeEmptyRows = input.indices.scan(0L) { sum, row -> if (row in emptyRows) sum + 1L else sum }
