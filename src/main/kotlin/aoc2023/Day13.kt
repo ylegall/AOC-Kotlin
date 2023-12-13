@@ -28,7 +28,6 @@ fun main() {
         require(col > 0 && col < input[0].length) { "row out of bounds" }
         val (left, right) = input.partitionAtCol(col)
         return left.zip(right).all { it.first == it.second }
-        // return input.all { row -> isReflectionAtCol(row, col) }
     }
 
     fun List<String>.partitionAtRow(row: Int): Pair<List<String>, List<String>> {
