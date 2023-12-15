@@ -54,6 +54,12 @@ fun enclosingRect(points: Iterable<Point>): Pair<Point, Point> {
 operator fun List<String>.get(point: Point) = this[point.y][point.x]
 operator fun List<String>.get(row: Int, col: Int) = get(row)[col]
 
+operator fun <T> List<List<T>>.get(point: Point) = this[point.y][point.x]
+// operator fun <T> List<MutableList<T>>.get(point: Point) = this[point.y][point.x]
+operator fun <T> List<MutableList<T>>.set(point: Point, value: T) {
+    this[point.y][point.x] = value
+}
+
 fun List<String>.getOrNull(row: Int, col: Int) = getOrNull(row)?.getOrNull(col)
 fun List<String>.getOrNull(point: Point) = getOrNull(point.y)?.getOrNull(point.x)
 

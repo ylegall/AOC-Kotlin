@@ -96,3 +96,13 @@ fun Iterable<Int>.product(initialValue: Int = 1): Int {
     }
     return sum
 }
+
+fun <T> MutableList<MutableList<T>>.transpose() {
+    for (row in this.indices) {
+        for (col in row + 1 until this[row].size) {
+            val tmp = this[row][col]
+            this[row][col] = this[col][row]
+            this[col][row] = tmp
+        }
+    }
+}
