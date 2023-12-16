@@ -51,6 +51,13 @@ fun enclosingRect(points: Iterable<Point>): Pair<Point, Point> {
     return Point(minX, minY) to Point(maxX, maxY)
 }
 
+fun List<String>.bounds() = Point(0, 0) to Point(size, this[0].length)
+
+operator fun Pair<Point, Point>.contains(p: Point): Boolean {
+    return p.x in (first.x until second.x) &&
+            p.y in (first.y until second.y)
+}
+
 operator fun List<String>.get(point: Point) = this[point.y][point.x]
 operator fun List<String>.get(row: Int, col: Int) = get(row)[col]
 
