@@ -85,3 +85,7 @@ inline fun <T> Iterable<Collection<T>>.findPoints(crossinline predicate: (T) -> 
 }.map {
     it.first
 }
+
+operator fun <T> List<List<T>>.contains(point: Point): Boolean {
+    return point.y in this.indices && point.x in this[0].indices
+}
