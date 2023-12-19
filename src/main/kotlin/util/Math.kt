@@ -29,3 +29,24 @@ fun sign(x: Int) = if (x < 0) -1 else 1
 infix fun Int.ceilDiv(divisor: Int): Int = -Math.floorDiv(-this, divisor)
 
 infix fun Long.ceilDiv(divisor: Long): Long = -Math.floorDiv(-this, divisor)
+
+fun Long.pow(e: Int): Long {
+    require(e >= 0) { "positive exponent required" }
+    if (e == 0) return 1L
+    var x = this
+    var n = e
+    var y = 1L
+    while (n > 1) {
+        if (n % 2 == 1) {
+            y *= x
+            n -= 1
+        }
+        x *= x
+        n /= 2
+    }
+    return x * y
+}
+
+fun Int.pow(e: Int): Long {
+    return this.toLong().pow(e)
+}
