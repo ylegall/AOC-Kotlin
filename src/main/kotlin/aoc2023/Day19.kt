@@ -7,29 +7,29 @@ private typealias Part = Map<Char, Int>
 
 fun main() {
 
-    data class Condition(
+    data class Rule(
         val category: Char,
-        val op: Char,
+        val lessThan: Boolean,
         val value: Int,
-        val dest: String
+        val destination: String
     )
 
     data class Workflow(
         val name: String,
-        val rules: List<Condition>,
-        val lastDest: String
+        val rules: List<Rule>,
+        val defaultDestination: String
     ) {
         fun processPart(part: Part): String {
             for (rule in rules) {
                 val inputValue = part[rule.category]!!
-                val testResult = when (rule.op) {
-                    '<' -> inputValue < rule.value
-                    '>' -> inputValue > rule.value
-                    else -> throw Exception("bad operator")
+                val testResult = if (rule.lessThan) {
+                    inputValue < rule.value
+                } else {
+                    inputValue > rule.value
                 }
-                if (testResult) return rule.dest
+                if (testResult) return rule.destination
             }
-            return lastDest
+            return defaultDestination
         }
     }
 
@@ -40,13 +40,13 @@ fun main() {
         }
     }
 
-    fun parseCondition(str: String): Condition {
+    fun parseCondition(str: String): Rule {
         val tokens = str.split(":")
         val category = tokens[0][0]
-        val op = tokens[0][1]
+        val lessThan = tokens[0][1] == '<'
         val value = tokens[0].substring(2).toInt()
         val dest = tokens[1]
-        return Condition(category, op, value, dest)
+        return Rule(category, lessThan, value, dest)
     }
 
     fun parseWorkflow(line: String): Workflow {
@@ -77,31 +77,27 @@ fun main() {
         }
     }
 
-    fun reduceRange(inputRange: LongRange, mid: Long, op: Char): LongRange {
-        return when(op) {
-            '<' -> {
-                when {
-                    mid >= inputRange.last -> inputRange
-                    mid < inputRange.first -> LongRange.EMPTY
-                    else -> inputRange.first until mid
-                }
+    fun reduceRange(inputRange: LongRange, mid: Long, lessThan: Boolean): LongRange {
+        return if (lessThan) {
+            when {
+                mid >= inputRange.last -> inputRange
+                mid < inputRange.first -> LongRange.EMPTY
+                else -> inputRange.first until mid
             }
-            '>' -> {
-                when {
-                    mid > inputRange.last -> LongRange.EMPTY
-                    mid <= inputRange.first -> inputRange
-                    else -> (mid+1) .. inputRange.last
-                }
+        } else {
+            when {
+                mid > inputRange.last -> LongRange.EMPTY
+                mid <= inputRange.first -> inputRange
+                else -> (mid+1) .. inputRange.last
             }
-            else -> throw Exception("invalid op")
         }
     }
 
     data class QuadRange(
         val ranges: Map<Char, LongRange> = "xmas".associateWith { 1L..4000L }
     ) {
-        fun reduceBy(category: Char, op: Char, midpoint: Long): QuadRange {
-            val newRange = reduceRange(ranges[category]!!, midpoint, op)
+        fun reduceBy(category: Char, lessThan: Boolean, midpoint: Long): QuadRange {
+            val newRange = reduceRange(ranges[category]!!, midpoint, lessThan)
             return QuadRange(ranges + (category to newRange))
         }
 
@@ -112,15 +108,14 @@ fun main() {
 
     fun part1() {
         val (workflows, parts) = parseInput("input.txt")
-        val acceptedParts = mutableSetOf<Part>()
-
-        for (part in parts) {
+        val result = parts.sumOf { part ->
             if (isPartValid(part, workflows)) {
-                acceptedParts.add(part)
+                part.values.sum()
+            } else {
+                0
             }
         }
-
-        println(acceptedParts.sumOf { it.values.sum() })
+        println(result)
     }
 
     fun part2() {
@@ -137,18 +132,14 @@ fun main() {
                     val workflow = workflows[flow]!!
                     var remainingQuadRange = quadRange
                     for (rule in workflow.rules) {
-                        val (category, op, mid, dest) = rule
-                        val newQuadRange = remainingQuadRange.reduceBy(category, op, mid.toLong())
+                        val (category, lessThan, mid, dest) = rule
+                        val newQuadRange = remainingQuadRange.reduceBy(category, lessThan, mid.toLong())
                         recurse(dest, newQuadRange)
 
-                        val (negativeOp, negativeMid) = if (op == '>') {
-                            '<' to (mid + 1L)
-                        } else {
-                            '>' to (mid - 1L)
-                        }
-                        remainingQuadRange = remainingQuadRange.reduceBy(category, negativeOp, negativeMid)
+                        val negativeMid = if (lessThan) mid - 1L else mid + 1L
+                        remainingQuadRange = remainingQuadRange.reduceBy(category, !lessThan, negativeMid)
                     }
-                    recurse(workflow.lastDest, remainingQuadRange)
+                    recurse(workflow.defaultDestination, remainingQuadRange)
                 }
             }
         }
