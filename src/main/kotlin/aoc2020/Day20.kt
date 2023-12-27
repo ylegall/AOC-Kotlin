@@ -1,15 +1,14 @@
 package aoc2020
 
+import util.rotate
+import util.rotateInPlace
 import java.io.File
-import java.nio.charset.StandardCharsets
 import kotlin.math.sqrt
 
 
 private object Day20 {
 
     enum class Flip { FRONT, BACK }
-
-    private val encoding = StandardCharsets.UTF_8.name()
 
     data class Orientation(val rotations: Int, val flip: Flip) {
         fun flip() = when (flip) {
@@ -22,7 +21,7 @@ private object Day20 {
 
     data class Tile(
             val id: String,
-            //val data: List<String>,
+            val data: List<String>,
             val edges: List<String>,
             val orientation: Orientation = Orientation(0, Flip.FRONT),
     ) {
@@ -33,7 +32,7 @@ private object Day20 {
                     edges[0],
                     edges[3].reversed(),
             )
-            return Tile(id, flippedEdges, orientation.flip())
+            return Tile(id, data.reversed(), flippedEdges, orientation.flip())
         }
 
         fun rotate(): Tile {
@@ -43,7 +42,7 @@ private object Day20 {
                     edges[1].reversed(),
                     edges[2]
             )
-            return Tile(id, rotatedEdges, orientation.rotate())
+            return Tile(id, data.rotate(), rotatedEdges, orientation.rotate())
         }
 
         fun expandStates(): Set<Tile> {
@@ -63,13 +62,12 @@ private object Day20 {
         }
 
         override fun toString(): String {
-            //return "Tile $id\n${data.joinToString("\n")}\n"
             return "Tile $id\n$orientation\n$edges\n\n"
         }
     }
 
     private val defaultOrientation = Orientation(0, Flip.FRONT)
-    private val emptyTile = Tile("", emptyList(), defaultOrientation)
+    private val emptyTile = Tile("", emptyList(), emptyList(), defaultOrientation)
 
     fun tile(id: String, data: List<String>, orientation: Orientation = defaultOrientation): Tile {
         val edges = listOf(
@@ -78,7 +76,7 @@ private object Day20 {
                 data.last(),
                 data.map { it.first() }.joinToString(""),
         )
-        return Tile(id, edges, orientation)
+        return Tile(id, data, edges, orientation)
     }
 
     fun buildTileMap(tiles: List<Tile>): Map<Pair<String, Int>, Set<Tile>> {
@@ -139,11 +137,6 @@ private object Day20 {
     private fun fillBoard(state: SearchState): Boolean {
         val row = state.row
         val col = state.col
-
-        //println("($row, $col)")
-        //println(state.grid.joinToString("\n") { it.joinToString(" ") { it.id } })
-        //println()
-
         if (row >= state.grid.size) {
             return true
         }
@@ -165,10 +158,9 @@ private object Day20 {
         return false
     }
 
-    fun fillBoard(tiles: List<Tile>) {
+    fun fillBoard(tiles: List<Tile>): List<List<Tile>> {
         val maxRows = sqrt(tiles.size.toDouble()).toInt()
         val maxCols = maxRows
-        println("$maxRows x $maxCols")
         val grid = List(maxRows) { MutableList(maxCols) { emptyTile } }
         val expandedTiles = tiles.flatMap { it.expandStates() }
         val edgeMap = buildTileMap(expandedTiles)
@@ -183,21 +175,83 @@ private object Day20 {
             val topRight = initialState.grid.first().last().id.toLong()
             val bottomLeft = initialState.grid.last().first().id.toLong()
             val bottomRight = initialState.grid.last().last().id.toLong()
-            println("$topLeft $topRight")
-            println("$bottomLeft $bottomRight")
-            //println(initialState.grid.joinToString("\n"))
             println(topLeft * topRight * bottomLeft * bottomRight)
-
-            println(grid.joinToString("\n") { it.joinToString { it.id } })
+            // println(grid.joinToString("\n") { it.joinToString { "${it.id} ${it.orientation}" } })
         }
+        return grid
     }
 
+    fun findImage(grid: List<List<Tile>>) {
+        val pattern = listOf(
+            "                  # ",
+            "#    ##    ##    ###",
+            " #  #  #  #  #  #   "
+        )
+
+        val tileRows = grid.first().first().data.size
+        val tileCols = grid.first().first().data.first().length
+
+        val trimmedGrid = mutableListOf<MutableList<Char>>()
+        for (row in grid.indices) {
+            for (subRow in 1 until tileRows-1) {
+                val trimmedRow = grid[row].joinToString("") { tile ->
+                    tile.data[subRow].slice(1 until tileCols-1)
+                }
+                trimmedGrid.add(trimmedRow.toMutableList())
+            }
+        }
+
+        fun matchPattern(startRow: Int, startCol: Int, data: List<List<Char>>): Int {
+            var count = 0
+            for (r in pattern.indices) {
+                for (c in pattern[r].indices) {
+                    val patternTile = pattern[r][c]
+                    if (patternTile == '#') {
+                        val dataTile = data[startRow + r][startCol + c]
+                        if (dataTile == '#') {
+                            count += 1
+                        } else {
+                            return 0
+                        }
+                    }
+                }
+            }
+            return count
+        }
+
+        fun orientAndFindMatches(data: MutableList<MutableList<Char>>): Int {
+            val candidates = data.sumOf { line ->
+                line.count { it == '#' }
+            }.also { println("candidate tiles: $it") }
+
+            repeat(2) {
+                repeat(4) {
+                    var totoalMonsterTiles = 0
+                    for (startRow in 0 until data.size - pattern.size + 1) {
+                        for (startCol in 0 until data[startRow].size - pattern.first().length + 1) {
+                            totoalMonsterTiles += matchPattern(startRow, startCol, data)
+                        }
+                    }
+                    if (totoalMonsterTiles > 0) {
+                        return candidates - totoalMonsterTiles
+                    }
+                    data.rotateInPlace()
+                }
+                data.reverse()
+            }
+            println("no matches found")
+            return -1
+        }
+
+        val result = orientAndFindMatches(trimmedGrid)
+        println(result)
+    }
 
 }
 
 fun main() {
-    val input = File("inputs/2020/20.txt").readLines()
+    val input = File("input.txt").readLines()
     val tiles = Day20.parseInput(input)
-
-    Day20.fillBoard(tiles)
+    val grid = Day20.fillBoard(tiles)
+    Day20.findImage(grid)
 }

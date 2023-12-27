@@ -106,3 +106,34 @@ fun <T> MutableList<MutableList<T>>.transpose() {
         }
     }
 }
+
+fun List<String>.rotate(): List<String> {
+    val newRows = mutableListOf<String>()
+    (0 until this.first().length).forEach { col ->
+        val c = indices.reversed().map { row -> this[row][col] }
+        newRows.add(c.joinToString(""))
+    }
+    return newRows
+}
+
+fun MutableList<MutableList<Char>>.rotateInPlace() {
+    val n = this.size
+    val maxRow = n / 2
+
+    for (row in 0 until maxRow) {
+        for (col in row until n - row - 1) {
+            var currentRow = row
+            var currentCol = col
+            val temp = this[row][col]
+            // inner cycle
+            for (i in 0 until 3) {
+                val newRow = n - 1 - currentCol
+                val newCol = currentRow
+                this[currentRow][currentCol] = this[newRow][newCol]
+                currentRow = newRow
+                currentCol = newCol
+            }
+            this[currentRow][currentCol] = temp
+        }
+    }
+}
