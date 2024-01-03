@@ -11,6 +11,13 @@ class UnionFind(initialSize: Int) {
 
     fun size(item: Int) = sizes[find(item)]
 
+    fun groupSizes(): Map<Int, Int> {
+        return groups.associate {
+            val root = find(it)
+            root to sizes[root]
+        }
+    }
+
     fun find(item: Int): Int {
         var root = item
         while (root != groups[root]) {
