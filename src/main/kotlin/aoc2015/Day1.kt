@@ -2,24 +2,23 @@ package aoc2015
 
 import java.io.File
 
-private fun countParens(parens: String): Int {
-    return parens.map { if (it == '(') 1 else -1 }.sum()
-}
-
-private tailrec fun firstNegativeIndex(index: Int, sum: Int, parens: String): Int {
-    if (index > parens.length) return -1
-    if (sum == -1) return index
-    val newSum = sum + if (parens[index] == '(') 1 else -1
-    return firstNegativeIndex(index + 1, newSum, parens)
-}
-
 fun main() {
-    // part 1
-    val parens = File("inputs/2015/1.txt").useLines {
-        it.toList().joinToString("").filter { it != '(' || it != ')' }
-    }
-    println(countParens(parens))
 
-    // part 2
-    println(firstNegativeIndex(0, 0, parens))
+    fun charValue(char: Char) = if (char == '(') 1L else -1
+
+    fun part1() {
+        File("input.txt").readText().sumOf { charValue(it) }.also { println(it) }
+    }
+
+    fun part2() {
+        val result = File("input.txt").readText().asSequence()
+            .scan(0L) { acc, char ->
+                acc + charValue(char)
+            }.withIndex()
+            .first { it.value == -1L }
+        println(result.index)
+    }
+
+    part1()
+    part2()
 }
