@@ -1,6 +1,6 @@
 package aoc2015
 
-import util.toHexString
+import util.toHex
 import java.security.MessageDigest
 
 
@@ -10,7 +10,7 @@ private fun firstHashWithPrefix(key: String, target: String): Int {
     val md = MessageDigest.getInstance("MD5")
     return generateSequence(1) { it + 1 }.first {
         val input = "$key$it".toByteArray()
-        md.digest(input).toHexString().startsWith(target)
+        md.digest(input).toHex().startsWith(target)
     }
 }
 

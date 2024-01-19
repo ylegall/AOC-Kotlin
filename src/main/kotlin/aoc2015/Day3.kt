@@ -1,12 +1,11 @@
 package aoc2015
 
 import util.Point
-import util.input
-import kotlin.streams.toList
+import java.io.File
 
-private fun countVisitedHouses(dirs: String): Set<Point> {
-    val visited = hashSetOf(Point(0, 0))
-    dirs.map { dir ->
+fun main() {
+
+    val input = File("input.txt").readText().map { dir ->
         when (dir) {
             '<' -> Point(-1, 0)
             '>' -> Point(1, 0)
@@ -14,30 +13,23 @@ private fun countVisitedHouses(dirs: String): Set<Point> {
             'v' -> Point(0, 1)
             else -> throw Exception("unknown input: $dir")
         }
-    }.reduce { current, next ->
-        visited.add(current)
-        Point(current.x + next.x, current.y + next.y)
-    }.let {
-        visited.add(it)
-    }
-    return visited
-}
-
-private fun countVisitedHousesInPairs(dirs: String): Set<Point> {
-    val pairs = dirs.chunked(2)
-    val santaDirs = pairs.map { it[0] }.joinToString("")
-    val roboDirs = pairs.map { it[1] }.joinToString("")
-    return countVisitedHouses(santaDirs) + countVisitedHouses(roboDirs)
-}
-
-fun main() {
-    val dirs = input("inputs/2015/3.txt").use {
-        it.toList().joinToString("")
     }
 
-    // part 1
-    println(countVisitedHouses(dirs).size)
+    fun part1() {
+        val points = input.scan(Point(0, 0)) { acc, dir -> acc + dir }.toSet()
+        println(points.size)
+    }
 
-    // part 2
-    println(countVisitedHousesInPairs(dirs).size)
+    fun part2() {
+        val pairs = input.chunked(2)
+        val visited = (
+                pairs.map { it[0] }.scan(Point(0, 0)) { acc, dir -> acc + dir }.toSet() +
+                pairs.map { it[1] }.scan(Point(0, 0)) { acc, dir -> acc + dir }.toSet()
+        ).size
+        println(visited)
+    }
+
+    part1()
+    part2()
+
 }
