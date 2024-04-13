@@ -1,71 +1,96 @@
 package aoc2015
 
-import util.input
-import java.util.*
-import kotlin.streams.asSequence
+import aoc2015.Day7.Op.*
+import java.io.File
 
-class Circuit
-{
-    private class Node(
-        val operation: String,
-        val symbol: String,
-        val children: List<String>
-    )
-
-    private val nodes = HashMap<String, Node>()
-
-    fun buildNodes(lines: Sequence<String>) {
-        lines.forEach { line ->
-            val tokens = line.split(" ")
-            val node = when {
-                tokens.size == 3 -> Node("SET", tokens.last(), listOf(tokens.first()))
-                tokens[0] == "NOT" -> Node("NOT", tokens.last(), listOf(tokens[1]))
-                tokens[1] == "AND" -> Node("AND", tokens.last(), listOf(tokens[0], tokens[2]))
-                tokens[1] == "OR" -> Node("OR", tokens.last(), listOf(tokens[0], tokens[2]))
-                tokens[1] == "LSHIFT" -> Node("LSHIFT", tokens.last(), listOf(tokens[0], tokens[2]))
-                tokens[1] == "RSHIFT" -> Node("RSHIFT", tokens.last(), listOf(tokens[0], tokens[2]))
-                else -> throw Exception("invalid command")
-            }
-            nodes[node.symbol] = node
-        }
-    }
-
-    fun evalTree(root: String, overrides: List<Pair<String, Int>> = emptyList()): Int {
-        val values = HashMap<String, Int>()
-        overrides.forEach { values[it.first] = it.second }
-        return evalTree(root, values)
-    }
-
-    private fun evalTree(symbol: String, values: HashMap<String, Int>): Int {
-        if (symbol in values) {
-            return values[symbol]!!
-        }
-        if (symbol !in nodes) {
-            return symbol.toInt()
-        }
-        val node = nodes[symbol] ?: throw Exception("symbol $symbol not found")
-        val result = when (node.operation) {
-            "SET" -> if (node.children.first() in nodes) evalTree(node.children.first(), values) else node.children.first().toInt()
-            "NOT" -> evalTree(node.children.first(), values).inv()
-            "AND" -> evalTree(node.children.first(), values) and evalTree(node.children.last(), values)
-            "OR" -> evalTree(node.children.first(), values) or evalTree(node.children.last(), values)
-            "LSHIFT" -> evalTree(node.children.first(), values) shl node.children.last().toInt()
-            "RSHIFT" -> evalTree(node.children.first(), values) ushr node.children.last().toInt()
-            else -> throw Exception("invalid operation: ${node.operation}")
-        }
-        if (node.symbol in values) throw Exception("duplicate result for ${node.symbol}")
-        values[node.symbol] = result
-        return result
+private object Day7 {
+    enum class Op {
+        SET,
+        AND,
+        OR,
+        NOT,
+        LSHIFT,
+        RSHIFT
     }
 }
 
-
 fun main() {
-    val circuit = Circuit()
-    input("inputs/2015/7.txt").use {
-        circuit.buildNodes(it.asSequence())
+
+    data class Node(
+        val id: String,
+        val op: Day7.Op,
+        val inputs: List<String>
+    )
+
+    fun parseNode(line: String): Node {
+        val tokens = line.split(" ")
+        return when {
+            tokens.size == 3 -> Node(tokens.last(), SET, tokens.take(1))
+            tokens.first() == "NOT" -> Node(tokens.last(), NOT, listOf(tokens[1]))
+            tokens[1] == "AND" -> Node(tokens.last(), AND, listOf(tokens[0], tokens[2]))
+            tokens[1] == "OR" -> Node(tokens.last(), OR, listOf(tokens[0], tokens[2]))
+            tokens[1] == "LSHIFT" -> Node(tokens.last(), LSHIFT, listOf(tokens[0], tokens[2]))
+            tokens[1] == "RSHIFT" -> Node(tokens.last(), RSHIFT, listOf(tokens[0], tokens[2]))
+            else -> throw Exception("error parsing line: $line")
+        }
     }
-    val result = circuit.evalTree("a")
-    println(result)
-    println(circuit.evalTree("a", listOf(Pair("b", result))))
+
+    fun parseNodes(fileName: String): Map<String, Node> {
+        return File("input.txt").useLines { lines ->
+            lines.map { line -> parseNode(line) }
+                .associateBy { it.id }
+        }
+    }
+
+    fun String.symbolValue(values: Map<String, Int?>): Int? {
+        return if (this in values) {
+            values[this]
+        } else {
+            this.toInt()
+        }
+    }
+
+    fun evalNode(node: Node, values: List<Int>): Int {
+        return when (node.op) {
+            SET -> values[0]
+            AND -> values[0] and values[1]
+            OR -> values[0] or values[1]
+            NOT -> values[0].inv() and 0xFFFF
+            LSHIFT -> values[0] shl values[1]
+            RSHIFT -> values[0] ushr values[1]
+        }
+    }
+
+    fun evalSignal(signalId: String, nodes: Map<String, Node>): Int {
+        val signalValues = mutableMapOf<String, Int?>()
+        nodes.keys.associateWithTo(signalValues) { null }
+        val stack = ArrayDeque<Node>()
+        stack.addLast(nodes[signalId]!!)
+        outer@while (stack.isNotEmpty()) {
+            val node = stack.removeLast()
+            val (id, op, inputs) = node
+            val inputValues = inputs.associateWith { it.symbolValue(signalValues) }
+            for (input in inputValues) {
+                if (input.value == null) {
+                    stack.add(node)
+                    stack.add(nodes[input.key]!!)
+                    continue@outer
+                }
+            }
+            val value = evalNode(node, inputValues.values.filterNotNull())
+            signalValues[id] = value
+        }
+        return signalValues[signalId]!!
+    }
+
+    fun part1and2() {
+        val nodes = parseNodes("input.txt")
+        val result = evalSignal("a", nodes)
+        println(result)
+        val newNodes = nodes + Pair("b", Node("b", SET, listOf(result.toString())))
+        val nextResult = evalSignal("a", newNodes)
+        println(nextResult)
+    }
+
+    part1and2()
 }
