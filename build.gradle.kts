@@ -5,8 +5,7 @@ group = "org.ygl"
 version = "1.0-SNAPSHOT"
 
 plugins {
-    kotlin("jvm") version "1.9.21"
-//    kotlin("jvm") version "1.6.10"
+    kotlin("jvm") version "1.9.23"
     java
 }
 
