@@ -4,35 +4,39 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import java.io.File
 
-private val integerPattern = Regex("-?\\d+")
-
-private fun jsonSum(string: String): Int {
-    val root = JsonParser().parse(string)
-    return jsonSum(root)
-}
-
-private fun jsonSum(node: JsonElement): Int {
-    return when {
-        node.isJsonPrimitive -> try { node.asInt } catch (e: Exception) { 0 }
-        node.isJsonArray -> node.asJsonArray.map { jsonSum(it) }.sum()
-        node.isJsonObject -> {
-            node.asJsonObject.takeIf {
-                it.entrySet().none { it.value.isRed() }
-            }?.entrySet()?.map {
-                jsonSum(it.value)
-            }?.sum() ?: 0
-        }
-        else -> throw Exception("bad node type")
-    }
-}
-
-private fun JsonElement.isRed() = this.isJsonPrimitive && this.asString == "red"
 
 fun main() {
-    val input = File("inputs/2015/12.txt").useLines { it.toList().joinToString("") }
+    val integerPattern = Regex("""-?\d+""")
 
-    println(integerPattern.findAll(input).mapNotNull { it.value.toInt() }.sum())
+    val input = File("input.txt").readText()
 
-    val totalWithoutRed = jsonSum(input)
-    println(totalWithoutRed)
+    fun part1() {
+        println(integerPattern.findAll(input).sumOf { it.value.toInt() })
+    }
+
+    fun JsonElement.isRed() = this.isJsonPrimitive && this.asString == "red"
+
+    fun jsonSum(node: JsonElement): Int {
+        return when {
+            node.isJsonPrimitive -> try { node.asInt } catch (e: Exception) { 0 }
+            node.isJsonArray -> node.asJsonArray.sumOf { jsonSum(it) }
+            node.isJsonObject -> {
+                val obj = node.asJsonObject
+                if (obj.entrySet().any { it.value.isRed() }) {
+                    0
+                } else {
+                    obj.entrySet().sumOf { jsonSum(it.value) }
+                }
+            }
+            else -> throw Exception("bad node type")
+        }
+    }
+
+    fun part2() {
+        val root = JsonParser.parseString(input)
+        println(jsonSum(root))
+    }
+
+    part1()
+    part2()
 }
