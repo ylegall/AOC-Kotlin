@@ -35,8 +35,8 @@ fun main() {
         }
     }
 
-    fun parseNodes(fileName: String): Map<String, Node> {
-        return File("input.txt").useLines { lines ->
+    fun parseNodes(filename: String): Map<String, Node> {
+        return File(filename).useLines { lines ->
             lines.map { line -> parseNode(line) }
                 .associateBy { it.id }
         }
@@ -68,7 +68,7 @@ fun main() {
         stack.addLast(nodes[signalId]!!)
         outer@while (stack.isNotEmpty()) {
             val node = stack.removeLast()
-            val (id, op, inputs) = node
+            val (id, _, inputs) = node
             val inputValues = inputs.associateWith { it.symbolValue(signalValues) }
             for (input in inputValues) {
                 if (input.value == null) {

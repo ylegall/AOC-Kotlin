@@ -15,7 +15,10 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    implementation("com.google.code.gson:gson:2.8.9")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+    testImplementation(kotlin("test"))
+    testImplementation("org.assertj:assertj-core:3.25.3")
 }
 
 val compileKotlin: KotlinCompile by tasks
@@ -27,4 +30,8 @@ task("runDay", JavaExec::class) {
     val day = project.properties["day"] ?: "0"
     mainClass.set("aoc$year.Day${day}Kt")
     classpath = sourceSets["main"].runtimeClasspath
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
