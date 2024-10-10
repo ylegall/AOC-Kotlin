@@ -1,12 +1,12 @@
 package aoc2016
 
-import util.toHexString
+import util.toHex
 import java.security.MessageDigest
 
 const val INPUT = "reyedfim"
 
 private val md5 = MessageDigest.getInstance("md5")
-private fun hash(n: Int) = md5.digest((INPUT + n).toByteArray()).toHexString()
+private fun hash(n: Int) = md5.digest((INPUT + n).toByteArray()).toHex()
 
 private val validHashes = generateSequence(0) {
     it + 1

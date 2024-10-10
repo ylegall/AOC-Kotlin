@@ -6,7 +6,7 @@ fun knotHashToString(
         suffix: List<Int> = listOf(17, 31, 73, 47, 23),
         iterations: Int = 64
 ): String {
-    return knotHash(lengths, suffix, iterations).toHexString()
+    return knotHash(lengths, suffix, iterations).toHex()
 }
 
 fun knotHash(
@@ -37,4 +37,4 @@ fun knotHash(
     }
 }
 
-fun Iterable<Int>.toHexString() = joinToString("") { "%02x".format(it) }
+fun Iterable<Int>.toHex() = joinToString("") { "%02x".format(it) }

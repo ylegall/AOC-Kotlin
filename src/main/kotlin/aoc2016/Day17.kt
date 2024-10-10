@@ -1,6 +1,6 @@
 package aoc2016
 
-import util.toHexString
+import util.toHex
 import java.security.MessageDigest
 import java.util.*
 
@@ -35,7 +35,7 @@ private object Day17 {
     private fun hash(str: String): String {
         md.reset()
         md.update((INPUT + str).toByteArray())
-        return md.digest().toHexString()
+        return md.digest().toHex()
     }
 
 

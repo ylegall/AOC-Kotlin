@@ -1,6 +1,7 @@
 package aoc2016
 
-import util.toHexString
+// import util.toHexString
+import util.toHex
 import java.security.MessageDigest
 
 
@@ -31,12 +32,12 @@ object Day14 {
         md.reset()
         md.update("$SALT$index".toByteArray())
         repeat(cycles) {
-            val lastDigest = md.digest().toHexString()
+            val lastDigest = md.digest().toHex()
             md.reset()
             md.update(lastDigest.toByteArray())
         }
         val hash = md.digest()
-        return hash.toHexString()
+        return hash.toHex()
     }
 
     private fun findMatchingTriple(match: MatchResult, index: Int): Set<Hash> {
