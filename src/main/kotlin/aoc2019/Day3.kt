@@ -3,60 +3,65 @@ package aoc2019
 import util.Point
 import java.io.File
 
-private typealias Directions = List<Pair<Char, Int>>
+fun main() {
 
-private object Day3 {
+    class Path(val segments: List<Pair<Char, Int>>)
 
-    fun parseInput() = File("inputs/2019/3.txt").readLines().map { line ->
-        line.split(",").map { it.first() to it.drop(1).toInt() }
+    fun parseInput(filename: String): List<Path> {
+        return File(filename).readLines().map { line ->
+            val segments = line.split(",").map { it.first() to it.drop(1).toInt() }
+            Path(segments)
+        }
     }
 
-    private fun Point.moveBy(dir: Char) = when(dir) {
-        'U' -> Point(x, y - 1)
-        'D' -> Point(x, y + 1)
-        'R' -> Point(x + 1, y)
-        'L' -> Point(x - 1, y)
-        else -> throw Exception("invalid direction: $dir")
+    fun extendFromPoint(pos: Point, dir: Char, steps: Int): List<Point> {
+        return when (dir) {
+            'U' -> (pos.y - 1 downTo pos.y - steps).map { Point(pos.x, it) }
+            'D' -> (pos.y + 1 .. pos.y + steps).map { Point(pos.x, it) }
+            'R' -> (pos.x + 1 .. pos.x + steps).map { Point(it, pos.y) }
+            'L' -> (pos.x - 1 downTo pos.x - steps).map { Point(it, pos.y) }
+            else -> throw Exception("invalid direction: $dir")
+        }
     }
 
-    private fun pathPoints(directions: Directions): Map<Point, Int> {
+    fun pathPoints(path: List<Pair<Char, Int>>): Map<Point, Int> {
         var pos = Point(0, 0)
-        val seenPoints = HashMap<Point, Int>()
+        val seenPoints = mutableMapOf<Point, Int>()
         var steps = 0
-        for ((dir, len) in directions) {
-            repeat (len) {
-                pos = pos.moveBy(dir)
+        for ((dir, len) in path) {
+            val nextPoints = extendFromPoint(pos, dir, len)
+            for (point in nextPoints) {
                 steps += 1
-                seenPoints.putIfAbsent(pos, steps)
+                if (point !in seenPoints) {
+                    seenPoints[point] = steps
+                }
             }
+            pos = nextPoints.last()
         }
         return seenPoints
     }
 
-    private fun findIntersections(paths: List<Directions>): Set<Pair<Point, Int>> {
-        val points1 = pathPoints(paths[0])
-        val points2 = pathPoints(paths[1])
-        return points1.filter {
+    fun findClosestIntersection(paths: List<Path>) {
+        val points1 = pathPoints(paths[0].segments)
+        val points2 = pathPoints(paths[1].segments)
+        val intersections = points1.keys.filter {
+            it in points2
+        }
+        println(intersections.minOf { it.mDist(0, 0) })
+    }
+
+    fun findfewestStepsToIntersection(paths: List<Path>) {
+        val points1 = pathPoints(paths[0].segments)
+        val points2 = pathPoints(paths[1].segments)
+        val intersections = points1.filter {
             it.key in points2
         }.map { (point, steps) ->
             point to steps + (points2[point] ?: 0)
         }.toSet()
+        println(intersections.minOf { it.second } )
     }
 
-    fun findClosestIntersection(paths: List<Directions>) {
-        val intersections = findIntersections(paths)
-        println(intersections.map { (point, _) -> point.mDist(0, 0) }.minOrNull())
-    }
-
-    fun findfewestStepsToIntersection(paths: List<Directions>) {
-        val intersections = findIntersections(paths)
-        println(intersections.minByOrNull { it.second }?.second)
-    }
-
-}
-
-fun main() {
-    val paths = Day3.parseInput()
-    Day3.findClosestIntersection(paths)
-    Day3.findfewestStepsToIntersection(paths)
+    val directions = parseInput("input.txt")
+    findClosestIntersection(directions)
+    findfewestStepsToIntersection(directions)
 }
