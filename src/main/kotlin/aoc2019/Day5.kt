@@ -1,23 +1,22 @@
 package aoc2019
 
-private object Day5 {
+
+fun main() {
+
+    val codes = loadIntCodeInstructions("input.txt")
 
     fun diagnosticValuePart1() {
-        val codes = loadIntCodeInstructions("inputs/2019/5.txt")
         intCodeProcessor(codes) {
             inputSupplier = { 1 }
         }.run()
     }
 
     fun diagnosticValuePart2() {
-        val codes = loadIntCodeInstructions("inputs/2019/5.txt")
         intCodeProcessor(codes) {
             inputSupplier = { 5 }
         }.run()
     }
-}
 
-fun main() {
-    Day5.diagnosticValuePart1()
-    Day5.diagnosticValuePart2()
+    diagnosticValuePart1()
+    diagnosticValuePart2()
 }
