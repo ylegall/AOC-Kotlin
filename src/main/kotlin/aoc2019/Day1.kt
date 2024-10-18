@@ -3,15 +3,6 @@ package aoc2019
 import java.io.File
 
 
-
-//private fun totalFuel() = File("input.txt").useLines { lines ->
-//    lines.map { fuelForMass(it.toInt()) }.sum()
-//}
-//
-//private fun totalFuelRecursive() = File("inputs/2019/1.txt").useLines { lines ->
-//    lines.map { fuelRecursive(it.toInt()) }.sum()
-//}
-
 fun main() {
 
     fun fuelForMass(mass: Int) = (mass / 3 - 2).coerceAtLeast(0)
