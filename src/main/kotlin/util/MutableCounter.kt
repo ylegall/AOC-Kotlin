@@ -20,7 +20,7 @@ class MutableCounter<T>(
         counts[key] = value
     }
 
-    operator fun plusAssign(key: T) = increment(key)
+    operator fun plusAssign(key: T) = increment(key, 1L)
 
     fun copy() = MutableCounter(counts.toMutableMap())
 
