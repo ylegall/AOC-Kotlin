@@ -96,7 +96,6 @@ fun main() {
         results: MutableList<Long>
     ) {
         for (nextOctal in 0 until 8) {
-            // val a = (octalList + o).fromOctal()
             val a = (prevA shl 3) + nextOctal
             val registers = longArrayOf(a, 0, 0)
             val machine = ThreeBitMachine(registers)
