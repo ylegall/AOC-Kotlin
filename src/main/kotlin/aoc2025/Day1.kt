@@ -14,9 +14,9 @@ private object Day1 {
         }.toList()
     }
 
-    fun part1(rotations: List<Int>) {
-        val password = rotations.scan(START_POSITION) { position, rotation ->
-            (position + rotation) % DIAL_SIZE
+    fun part1(deltas: List<Int>) {
+        val password = deltas.scan(START_POSITION) { position, delta ->
+            (position + delta) % DIAL_SIZE
         }.count { it == 0 }
         println(password)
     }
