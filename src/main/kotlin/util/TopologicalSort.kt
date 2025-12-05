@@ -6,6 +6,7 @@ fun <T> topologicalSort(dependencies: Map<T, Iterable<T>>): List<T> {
     val sortedItems = LinkedHashSet<T>(dependencies.keys.size)
     while (remainingItems.isNotEmpty()) {
         val (itemsWithoutDependencies, itemsWithDependencies) = remainingItems.entries.partition { it.value.isEmpty() }
+        if (itemsWithDependencies.isEmpty()) throw Exception("no next available step")
         sortedItems.addAll(itemsWithoutDependencies.map { it.key })
 
         remainingItems = itemsWithDependencies.associate { (item, dependencies) ->
