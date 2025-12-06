@@ -1,13 +1,13 @@
 package aoc2015
 
 import aoc2015.Day22.Spell.*
+import kotlin.math.min
 
-object Day22 {
+private object Day22 {
 
-    private const val ENEMY_DAMAGE = 9
-    private const val HARD_MODE = true
+    const val ENEMY_DAMAGE = 9
 
-    private enum class Spell(val cost: Int) {
+    enum class Spell(val cost: Int) {
         MISSILES(53),
         DRAIN(73),
         SHIELD(113),
@@ -15,7 +15,7 @@ object Day22 {
         RECHARGE(229)
     }
 
-    private data class GameState(
+    data class GameState(
             var hp: Int            = 50,
             var armor: Int         = 0,
             var mana: Int          = 500,
@@ -31,7 +31,7 @@ object Day22 {
         object Loss: GameResult()
     }
 
-    private fun GameState.applyEffects() {
+    fun GameState.applyEffects() {
         if (shieldTimer > 0) {
             armor = 7
             shieldTimer -= 1
@@ -49,13 +49,18 @@ object Day22 {
     }
 
     private var minManaSoFar = Int.MAX_VALUE
-    fun minManaToWin(): Int {
+
+    fun minManaToWin(hardMode: Boolean): Int {
         minManaSoFar = Int.MAX_VALUE
-        return (minManaRecursive() as? GameResult.Win)?.manaSpent ?: -1
+        return (minManaRecursive(hardMode = hardMode) as? GameResult.Win)?.manaSpent ?: -1
     }
 
-    private fun minManaRecursive(state: GameState = GameState(), wizardTurn: Boolean = true): GameResult {
-        if (HARD_MODE && wizardTurn) state.hp -= 1
+    fun minManaRecursive(
+        state: GameState = GameState(),
+        wizardTurn: Boolean = true,
+        hardMode: Boolean = false
+    ): GameResult {
+        if (hardMode && wizardTurn) state.hp -= 1
         if (state.hp <= 0) {
             return GameResult.Loss
         }
@@ -63,12 +68,12 @@ object Day22 {
         state.applyEffects()
 
         if (state.enemyHp <= 0) {
-            minManaSoFar = Math.min(state.manaSpent, minManaSoFar)
+            minManaSoFar = min(state.manaSpent, minManaSoFar)
             return GameResult.Win(state.manaSpent)
         }
 
         return if (wizardTurn) {
-            val availableSpells = values().filter {
+            val availableSpells = Spell.entries.filter {
                 it.cost <= state.mana
             }.toMutableSet().apply {
                 if (state.poisonTimer > 0)   remove(POISON)
@@ -94,10 +99,10 @@ object Day22 {
                         manaSpent = state.manaSpent + nextSpell.cost
                 )
                 if (nextState.enemyHp <= 0) {
-                    minManaSoFar = Math.min(state.manaSpent, minManaSoFar)
+                    minManaSoFar = min(state.manaSpent, minManaSoFar)
                     GameResult.Win(nextState.manaSpent)
                 } else {
-                    minManaRecursive(nextState, !wizardTurn)
+                    minManaRecursive(nextState, !wizardTurn, hardMode)
                 }
 
             }.filterIsInstance<GameResult.Win>().minByOrNull {
@@ -107,11 +112,12 @@ object Day22 {
         } else {
             state.hp -= (ENEMY_DAMAGE - state.armor)
             if (state.hp <= 0) return GameResult.Loss
-            minManaRecursive(state, !wizardTurn)
+            minManaRecursive(state, !wizardTurn, hardMode)
         }
     }
 }
 
-private fun main() {
-    println(Day22.minManaToWin())
+fun main() {
+    println(Day22.minManaToWin(false))
+    println(Day22.minManaToWin(true))
 }
