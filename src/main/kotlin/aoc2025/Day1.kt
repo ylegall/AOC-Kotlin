@@ -26,9 +26,9 @@ private object Day1 {
         var pos = START_POSITION
         for (delta in deltas) {
             val (newDelta, dist) = if (delta < 0) {
-                -delta to if (pos == 0) 100 else pos
+                -delta to if (pos == 0) DIAL_SIZE else pos
             } else {
-                delta to (100 - pos)
+                delta to (DIAL_SIZE - pos)
             }
             if (newDelta >= dist) {
                 count += (1 + (newDelta-dist)/DIAL_SIZE)
