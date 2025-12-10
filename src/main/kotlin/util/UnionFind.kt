@@ -18,6 +18,9 @@ class UnionFind(initialSize: Int) {
         }
     }
 
+    fun connected(i: Int, j: Int) =
+        find(i) == find(j)
+
     fun find(item: Int): Int {
         var root = item
         while (root != groups[root]) {
