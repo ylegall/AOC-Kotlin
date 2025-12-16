@@ -72,7 +72,7 @@ fun List<String>.getOrNull(point: Point) = getOrNull(point.y)?.getOrNull(point.x
 
 fun Iterable<String>.findFirstPoint(char: Char): Point? {
     return this.asSequence()
-        .flatMapIndexed { row, line -> line.mapIndexed { col, c -> Point(row, col) to c } }
+        .flatMapIndexed { row, line -> line.mapIndexed { col, c -> Point(col, row) to c } }
         .find { it.second == char }?.first
 }
 
