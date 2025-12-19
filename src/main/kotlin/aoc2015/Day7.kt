@@ -12,15 +12,23 @@ private object Day7 {
         LSHIFT,
         RSHIFT
     }
-}
-
-fun main() {
 
     data class Node(
         val id: String,
         val op: Day7.Op,
         val inputs: List<String>
-    )
+    ) {
+        fun eval(values: List<Int>): Int {
+            return when (op) {
+                SET -> values[0]
+                AND -> values[0] and values[1]
+                OR -> values[0] or values[1]
+                NOT -> values[0].inv() and 0xFFFF
+                LSHIFT -> values[0] shl values[1]
+                RSHIFT -> values[0] ushr values[1]
+            }
+        }
+    }
 
     fun parseNode(line: String): Node {
         val tokens = line.split(" ")
@@ -35,8 +43,8 @@ fun main() {
         }
     }
 
-    fun parseNodes(filename: String): Map<String, Node> {
-        return File(filename).useLines { lines ->
+    fun parseInput(): Map<String, Node> {
+        return File("input.txt").useLines { lines ->
             lines.map { line -> parseNode(line) }
                 .associateBy { it.id }
         }
@@ -47,17 +55,6 @@ fun main() {
             values[this]
         } else {
             this.toInt()
-        }
-    }
-
-    fun evalNode(node: Node, values: List<Int>): Int {
-        return when (node.op) {
-            SET -> values[0]
-            AND -> values[0] and values[1]
-            OR -> values[0] or values[1]
-            NOT -> values[0].inv() and 0xFFFF
-            LSHIFT -> values[0] shl values[1]
-            RSHIFT -> values[0] ushr values[1]
         }
     }
 
@@ -77,14 +74,13 @@ fun main() {
                     continue@outer
                 }
             }
-            val value = evalNode(node, inputValues.values.filterNotNull())
+            val value = node.eval(inputValues.values.filterNotNull())
             signalValues[id] = value
         }
         return signalValues[signalId]!!
     }
 
-    fun part1and2() {
-        val nodes = parseNodes("input.txt")
+    fun part1and2(nodes: Map<String, Node>) {
         val result = evalSignal("a", nodes)
         println(result)
         val newNodes = nodes + Pair("b", Node("b", SET, listOf(result.toString())))
@@ -92,5 +88,9 @@ fun main() {
         println(nextResult)
     }
 
-    part1and2()
+}
+
+fun main() {
+    val nodes = Day7.parseInput()
+    Day7.part1and2(nodes)
 }

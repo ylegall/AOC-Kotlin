@@ -1,7 +1,5 @@
 package aoc2015
 
-import aoc2015.Day6.Command
-import aoc2015.Day6.LEN
 import aoc2015.Day6.Operation.OFF
 import aoc2015.Day6.Operation.ON
 import aoc2015.Day6.Operation.TOGGLE
@@ -10,23 +8,21 @@ import java.io.File
 import kotlin.math.max
 
 private object Day6 {
+
+    val pointPattern = Regex("""(\d+)""")
+
     enum class Operation { ON, OFF, TOGGLE }
 
     const val LEN = 1000
 
     data class Command(
         val operation: Operation,
-        // val rect: IntRect
         val p1: Point,
         val p2: Point,
     )
-}
 
-fun main() {
-    val pointPattern = Regex("""(\d+)""")
-
-    fun parseInput(filename: String): List<Command> {
-        return File(filename).useLines { lines ->
+    fun parseInput(): List<Command> {
+        return File("input.txt").useLines { lines ->
             lines.map { line ->
                 val points = pointPattern.findAll(line).map { it.value.toInt() }.toList()
                 val op = when {
@@ -60,10 +56,8 @@ fun main() {
         }
     }
 
-    fun part1() {
+    fun part1(input: List<Command>) {
         val lights = Array(LEN) { IntArray(LEN) }
-        val input = parseInput("input.txt")
-
         for (command in input) {
             when (command.operation) {
                 ON -> lights.set(1, command.p1, command.p2)
@@ -74,10 +68,8 @@ fun main() {
         println(lights.sumOf { it.sum() })
     }
 
-    fun part2() {
+    fun part2(input: List<Command>) {
         val lights = Array(LEN) { IntArray(LEN) }
-        val input = parseInput("input.txt")
-
         for (command in input) {
             when (command.operation) {
                 ON -> lights.add(1, command.p1, command.p2, false)
@@ -87,7 +79,10 @@ fun main() {
         }
         println(lights.sumOf { it.sum() })
     }
+}
 
-    part1()
-    part2()
+fun main() {
+    val input = Day6.parseInput()
+    Day6.part1(input)
+    Day6.part2(input)
 }
