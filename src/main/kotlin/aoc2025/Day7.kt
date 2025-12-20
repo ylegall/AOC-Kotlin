@@ -30,32 +30,22 @@ private object Day7 {
         val splitPoints = mutableSetOf<Point>()
 
         fun recurse(pos: Point): Long {
-            val cachedResult = cache[pos]
-            return if (cachedResult != null) {
-                cachedResult
-            } else {
-                when {
-                    pos.y >= input.grid.size -> 1L
-                    input.grid[pos] == '^' -> {
+            return when {
+                pos.y >= input.grid.size -> 1L
+                else -> cache.getOrPut(pos) {
+                    if (input.grid[pos] == '^') {
                         splitPoints.add(pos)
-                        recurse(pos.move(Direction.EAST)) +
-                            recurse(pos.move(Direction.WEST))
-                    }
-                    else -> {
+                        recurse(pos.move(Direction.EAST)) + recurse(pos.move(Direction.WEST))
+                    } else {
                         recurse(pos.move(Direction.SOUTH))
                     }
-                }.also {
-                    cache[pos] = it
                 }
             }
         }
 
         val totalPaths = recurse(input.startPos)
 
-        return Results(
-            splitPoints.size,
-            totalPaths
-        )
+        return Results(splitPoints.size, totalPaths)
     }
 }
 
